@@ -1,7 +1,7 @@
 package co.com.pragma.api.mapper;
 
 import co.com.pragma.api.dto.SolicitudDto;
-import co.com.pragma.model.solicitud.Solicitud;
+import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.enums.Estado;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +11,9 @@ import static co.com.pragma.model.solicitud.enums.Estado.obtenerPorId;
 
 @Component
 public class SolicitudMapper {
-    public Solicitud convertirDesde(SolicitudDto dto) {
+    public SolicitudPrestamo convertirDesde(SolicitudDto dto) {
         return Optional.ofNullable(dto)
-                .map(solicitudDto -> Solicitud.builder()
+                .map(solicitudDto -> SolicitudPrestamo.builder()
                         .monto(solicitudDto.monto())
                         .plazo(solicitudDto.plazo())
                         .email(solicitudDto.email())
@@ -23,16 +23,16 @@ public class SolicitudMapper {
                 .orElse(null);
     }
 
-    public SolicitudDto convertirA(Solicitud model) {
+    public SolicitudDto convertirA(SolicitudPrestamo model) {
         return Optional.ofNullable(model)
-                .map(solicitud -> new SolicitudDto(
-                        solicitud.getMonto(),
-                        solicitud.getPlazo(),
-                        solicitud.getEmail(),
-                        solicitud.getEstadoId(),
-                        obtenerPorId(solicitud.getEstadoId()) != null ?
-                                obtenerPorId(solicitud.getEstadoId()).getValor() : null,
-                        solicitud.getTipoPrestamoId()))
+                .map(solicitudPrestamo -> new SolicitudDto(
+                        solicitudPrestamo.getMonto(),
+                        solicitudPrestamo.getPlazo(),
+                        solicitudPrestamo.getEmail(),
+                        solicitudPrestamo.getEstadoId(),
+                        obtenerPorId(solicitudPrestamo.getEstadoId()) != null ?
+                                obtenerPorId(solicitudPrestamo.getEstadoId()).getValor() : null,
+                        solicitudPrestamo.getTipoPrestamoId()))
                 .orElse(null);
     }
 }

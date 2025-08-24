@@ -1,5 +1,7 @@
 package co.com.pragma.r2dbc;
 
+import co.com.pragma.r2dbc.adapter.SolicitudPrestamoRepositoryAdapter;
+import co.com.pragma.r2dbc.repository.SolicitudPrestamoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,14 +17,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SolicitudRepositoryAdapterTest {
+class SolicitudPrestamoRepositoryAdapterTest {
     // TODO: change four you own tests
 
     @InjectMocks
-    SolicitudRepositoryAdapter repositoryAdapter;
+    SolicitudPrestamoRepositoryAdapter repositoryAdapter;
 
     @Mock
-    SolicitudRepository repository;
+    SolicitudPrestamoRepository repository;
 
     @Mock
     ObjectMapper mapper;

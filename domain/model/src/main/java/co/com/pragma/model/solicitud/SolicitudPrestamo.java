@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Solicitud {
+public class SolicitudPrestamo {
     private Long id;
     private BigDecimal monto;
     private Integer plazo;

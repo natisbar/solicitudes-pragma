@@ -23,8 +23,8 @@ CREATE TABLE solicitudes.solicitud (
 	id_estado int8 not null,
 	id_tipo_prestamo int8 not null,
 	constraint solicitud_pk primary key (id_tipo_prestamo),
-	CONSTRAINT solicitud_estado_fk FOREIGN KEY (id_estado) REFERENCES public.estado(id_estado),
-    CONSTRAINT solicitud_tipo_prestamo_fk FOREIGN KEY (id_tipo_prestamo) REFERENCES public.tipo_prestamo(id_tipo_prestamo)
+	CONSTRAINT solicitud_estado_fk FOREIGN KEY (id_estado) REFERENCES solicitudes.estado(id_estado),
+    CONSTRAINT solicitud_tipo_prestamo_fk FOREIGN KEY (id_tipo_prestamo) REFERENCES solicitudes.tipo_prestamo(id_tipo_prestamo)
 );
 
 INSERT INTO estado (nombre, descripcion) VALUES('PENDIENTE REVISION', 'Pendiente de revision');
