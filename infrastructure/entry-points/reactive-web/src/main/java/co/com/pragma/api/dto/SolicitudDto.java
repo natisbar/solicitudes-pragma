@@ -1,11 +1,10 @@
 package co.com.pragma.api.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
+
+import static co.com.pragma.api.common.Constantes.PATRON_CORREO;
 
 public record SolicitudDto (
         @NotNull(message = "El monto es obligatorio")
@@ -15,6 +14,7 @@ public record SolicitudDto (
         @Min(value = 1, message = "El plazo(meses) debe ser mayor a 0")
         Integer plazo,
         @NotBlank(message = "El email es obligatorio y no puede estar vacio")
+        @Pattern(regexp = PATRON_CORREO, message = "El formato del correo electronico no es correcto")
         String email,
         Long estadoId,
         String estadoDescripcion,
