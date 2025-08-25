@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface SolicitudPrestamoGateway {
     Mono<SolicitudPrestamo> guardar(SolicitudPrestamo solicitudPrestamo);
-    Mono<Boolean> encontrarPorEmailYTipoPrestamoIdSinFinalizar(String correo, Long tipoSolicitudId, List<Long> estados);
+    Mono<Boolean> existePorEmailYTipoPrestamoIdSinFinalizar(String correo, Long tipoSolicitudId, List<Long> estados);
 }

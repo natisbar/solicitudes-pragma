@@ -30,7 +30,7 @@ public class SolicitudPrestamoRepositoryAdapter extends ReactiveAdapterOperation
     }
 
     @Override
-    public Mono<Boolean> encontrarPorEmailYTipoPrestamoIdSinFinalizar(String correo, Long tipoSolicitudId, List<Long> estados) {
+    public Mono<Boolean> existePorEmailYTipoPrestamoIdSinFinalizar(String correo, Long tipoSolicitudId, List<Long> estados) {
         return repository.existsByEmailAndTipoPrestamoIdAndEstadoIdNotIn(correo, tipoSolicitudId, estados);
     }
 }

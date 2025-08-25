@@ -6,12 +6,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
-public class UseCasesConfigTest {
+class UseCasesConfigTest {
 
     @Test
     void testUseCaseBeansExist() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class)) {
+        try (AnnotationConfigApplicationContext context =
+                     new AnnotationConfigApplicationContext(TestConfig.class)) {
+
             String[] beanNames = context.getBeanDefinitionNames();
 
             boolean useCaseBeanFound = false;
@@ -22,23 +25,22 @@ public class UseCasesConfigTest {
                 }
             }
 
-            assertTrue(useCaseBeanFound, "No beans ending with 'Use Case' were found");
+            assertTrue(useCaseBeanFound, "No beans ending with 'UseCase' were found");
         }
     }
 
     @Configuration
-    @Import(UseCasesConfig.class)
+    @Import(UseCasesConfig.class) // importa tu config real que hace el @ComponentScan
     static class TestConfig {
 
         @Bean
-        public MyUseCase myUseCase() {
-            return new MyUseCase();
+        public co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway tipoPrestamoGateway() {
+            return mock(co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway.class);
         }
-    }
 
-    static class MyUseCase {
-        public String execute() {
-            return "MyUseCase Test";
+        @Bean
+        public co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway solicitudPrestamoGateway() {
+            return mock(co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway.class);
         }
     }
 }

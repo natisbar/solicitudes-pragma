@@ -20,7 +20,7 @@ public class GenerarSolicitudUseCase {
     public Mono<SolicitudPrestamo> ejecutar(SolicitudPrestamo solicitudPrestamo) {
         return tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())
                 .flatMap(existe -> {
-                    if (Boolean.TRUE.equals(existe)) return solicitudPrestamoGateway.encontrarPorEmailYTipoPrestamoIdSinFinalizar(
+                    if (Boolean.TRUE.equals(existe)) return solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(
                             solicitudPrestamo.getEmail(),
                             solicitudPrestamo.getTipoPrestamoId(),
                             obtenerEstadosFinalizados().stream()
