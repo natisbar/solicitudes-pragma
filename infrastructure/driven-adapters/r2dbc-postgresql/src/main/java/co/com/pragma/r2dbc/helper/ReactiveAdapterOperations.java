@@ -34,9 +34,7 @@ public abstract class ReactiveAdapterOperations<E, D, I, R extends ReactiveCrudR
     }
 
     public Mono<E> save(E entity) {
-        return Mono.just(entity)
-                        .map(entity1 -> toData(entity))
-                                .flatMap(data -> saveData(data))
+        return saveData(toData(entity))
                 .map(this::toEntity);
     }
 

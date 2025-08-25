@@ -1,5 +1,7 @@
 package co.com.pragma.config;
 
+import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
+import co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -30,17 +32,17 @@ class UseCasesConfigTest {
     }
 
     @Configuration
-    @Import(UseCasesConfig.class) // importa tu config real que hace el @ComponentScan
+    @Import(UseCasesConfig.class)
     static class TestConfig {
 
         @Bean
-        public co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway tipoPrestamoGateway() {
-            return mock(co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway.class);
+        public TipoPrestamoGateway tipoPrestamoGateway() {
+            return mock(TipoPrestamoGateway.class);
         }
 
         @Bean
-        public co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway solicitudPrestamoGateway() {
-            return mock(co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway.class);
+        public SolicitudPrestamoGateway solicitudPrestamoGateway() {
+            return mock(SolicitudPrestamoGateway.class);
         }
     }
 }
