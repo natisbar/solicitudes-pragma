@@ -1,6 +1,7 @@
 package co.com.pragma.usecase.generarsolicitud;
 
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
+import co.com.pragma.model.solicitud.common.ex.ConflictoException;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import co.com.pragma.model.solicitud.enums.Estado;
 import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
@@ -30,7 +31,7 @@ public class GenerarSolicitudUseCase {
                             NO_EXISTE_TIPO_PRESTAMO.formatted(solicitudPrestamo.getTipoPrestamoId())));
                 })
                 .flatMap(existeSolicitud -> {
-                    if (Boolean.TRUE.equals(existeSolicitud)) return Mono.error(new NegocioException(EXISTE_SOLICITUD_ACTIVA));
+                    if (Boolean.TRUE.equals(existeSolicitud)) return Mono.error(new ConflictoException(EXISTE_SOLICITUD_ACTIVA));
                     return solicitudPrestamoGateway.guardar(solicitudPrestamo);
                 });
     }

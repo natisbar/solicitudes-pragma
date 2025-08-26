@@ -58,7 +58,7 @@ class RouterRestTest {
                     System.out.println("Respuesta: " + response);
                 })
                 .jsonPath("$.estado").isEqualTo(400)
-                .jsonPath("$.mensaje").isEqualTo("plazo: El plazo es obligatorio");
+                .jsonPath("$.mensaje").isEqualTo("plazo: El plazo es obligatorio y no puede estar vacio");
     }
 
     @Test

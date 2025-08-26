@@ -1,31 +1,33 @@
 package co.com.pragma.api.mapper;
 
-import co.com.pragma.api.dto.SolicitudDto;
+import co.com.pragma.api.dto.PrestamoRespuestaDto;
+import co.com.pragma.api.dto.PrestamoSolicitudDto;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.enums.Estado;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static co.com.pragma.model.solicitud.enums.Estado.obtenerPorId;
 
 @Component
 public class SolicitudMapper {
-    public SolicitudPrestamo convertirDesde(SolicitudDto dto) {
+    public SolicitudPrestamo convertirDesde(PrestamoSolicitudDto dto) {
         return Optional.ofNullable(dto)
-                .map(solicitudDto -> SolicitudPrestamo.builder()
-                        .monto(solicitudDto.monto())
-                        .plazo(solicitudDto.plazo())
-                        .email(solicitudDto.email())
-                        .tipoPrestamoId(solicitudDto.tipoPrestamoId())
+                .map(prestamoSolicitudDto -> SolicitudPrestamo.builder()
+                        .monto(new BigDecimal(prestamoSolicitudDto.monto()))
+                        .plazo(Integer.parseInt(prestamoSolicitudDto.plazo()))
+                        .email(prestamoSolicitudDto.email())
+                        .tipoPrestamoId(Long.parseLong(prestamoSolicitudDto.tipoPrestamoId()))
                         .estadoId(Estado.PENDIENTE.getId())
                         .build())
                 .orElse(null);
     }
 
-    public SolicitudDto convertirA(SolicitudPrestamo model) {
+    public PrestamoRespuestaDto convertirA(SolicitudPrestamo model) {
         return Optional.ofNullable(model)
-                .map(solicitudPrestamo -> new SolicitudDto(
+                .map(solicitudPrestamo -> new PrestamoRespuestaDto(
                         solicitudPrestamo.getMonto(),
                         solicitudPrestamo.getPlazo(),
                         solicitudPrestamo.getEmail(),

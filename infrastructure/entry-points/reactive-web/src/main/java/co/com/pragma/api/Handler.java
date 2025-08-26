@@ -1,6 +1,6 @@
 package co.com.pragma.api;
 
-import co.com.pragma.api.dto.SolicitudDto;
+import co.com.pragma.api.dto.PrestamoSolicitudDto;
 import co.com.pragma.api.mapper.SolicitudMapper;
 import co.com.pragma.api.validador.ValidacionManejador;
 import co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase;
@@ -20,7 +20,7 @@ public class Handler {
     private final SolicitudMapper solicitudMapper;
 
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(SolicitudDto.class)
+        return serverRequest.bodyToMono(PrestamoSolicitudDto.class)
                 .flatMap(validacionManejador::validar)
                 .map(solicitudMapper::convertirDesde)
                 .flatMap(generarSolicitudUseCase::ejecutar)
