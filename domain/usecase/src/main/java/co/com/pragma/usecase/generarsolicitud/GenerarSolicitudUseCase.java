@@ -16,7 +16,7 @@ public class GenerarSolicitudUseCase {
     private final TipoPrestamoGateway tipoPrestamoGateway;
     private final SolicitudPrestamoGateway solicitudPrestamoGateway;
     public static final String NO_EXISTE_TIPO_PRESTAMO = "El tipo de prestamo (%s) no existe";
-    public static final String EXISTE_SOLICITUD_ACTIVA = "Actulmente tiene una solicitud activa por el mismo tipo de prestamo";
+    public static final String EXISTE_SOLICITUD_ACTIVA = "Actualmente tiene una solicitud activa por el mismo tipo de prestamo";
 
     public Mono<SolicitudPrestamo> ejecutar(SolicitudPrestamo solicitudPrestamo) {
         return tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())

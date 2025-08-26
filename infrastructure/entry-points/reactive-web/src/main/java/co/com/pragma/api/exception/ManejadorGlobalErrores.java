@@ -1,5 +1,6 @@
 package co.com.pragma.api.exception;
 
+import co.com.pragma.model.solicitud.common.ex.ConflictoException;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public class ManejadorGlobalErrores extends AbstractErrorWebExceptionHandler {
         super.setMessageWriters(serverCodecConfigurer.getWriters());
         super.setMessageWriters(serverCodecConfigurer.getWriters());
         httpStatusCodes.put(NegocioException.class, HttpStatus.BAD_REQUEST);
+        httpStatusCodes.put(ConflictoException.class, HttpStatus.CONFLICT);
     }
 
     private Mono<ServerResponse> construirRespuestaError(ServerRequest request) {
