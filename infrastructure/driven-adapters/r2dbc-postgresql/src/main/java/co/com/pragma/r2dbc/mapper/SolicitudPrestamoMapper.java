@@ -2,7 +2,6 @@ package co.com.pragma.r2dbc.mapper;
 
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.TipoPrestamo;
-import co.com.pragma.model.solicitud.enums.Estado;
 import co.com.pragma.r2dbc.model.dto.SolicitudPrestamoDto;
 import org.springframework.stereotype.Component;
 

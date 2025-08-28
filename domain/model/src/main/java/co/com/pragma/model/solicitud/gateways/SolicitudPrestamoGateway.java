@@ -1,6 +1,5 @@
 package co.com.pragma.model.solicitud.gateways;
 
-import co.com.pragma.model.solicitud.FiltroData;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
