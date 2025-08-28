@@ -22,7 +22,7 @@ public class GenerarSolicitudUseCase {
         return tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())
                 .flatMap(existe -> {
                     if (Boolean.TRUE.equals(existe)) return solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(
-                            solicitudPrestamo.getEmail(),
+                            solicitudPrestamo.getCorreo(),
                             solicitudPrestamo.getTipoPrestamoId(),
                             obtenerEstadosFinalizados().stream()
                                     .map(Estado::getId)

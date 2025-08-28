@@ -8,4 +8,5 @@ public record PrestamoRespuestaDto(
         String email,
         Long estadoId,
         String estadoDescripcion,
-        Long tipoPrestamoId){}
+        Long tipoPrestamoId,
+        String tipoPrestamoDescripcion){}

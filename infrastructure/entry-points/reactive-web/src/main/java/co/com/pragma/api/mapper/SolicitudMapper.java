@@ -18,7 +18,7 @@ public class SolicitudMapper {
                 .map(prestamoSolicitudDto -> SolicitudPrestamo.builder()
                         .monto(new BigDecimal(prestamoSolicitudDto.monto()))
                         .plazo(Integer.parseInt(prestamoSolicitudDto.plazo()))
-                        .email(prestamoSolicitudDto.email())
+                        .correo(prestamoSolicitudDto.correo())
                         .tipoPrestamoId(Long.parseLong(prestamoSolicitudDto.tipoPrestamoId()))
                         .estadoId(Estado.PENDIENTE.getId())
                         .build())
@@ -30,11 +30,12 @@ public class SolicitudMapper {
                 .map(solicitudPrestamo -> new PrestamoRespuestaDto(
                         solicitudPrestamo.getMonto(),
                         solicitudPrestamo.getPlazo(),
-                        solicitudPrestamo.getEmail(),
+                        solicitudPrestamo.getCorreo(),
                         solicitudPrestamo.getEstadoId(),
                         obtenerPorId(solicitudPrestamo.getEstadoId()) != null ?
                                 obtenerPorId(solicitudPrestamo.getEstadoId()).getValor() : null,
-                        solicitudPrestamo.getTipoPrestamoId()))
+                        solicitudPrestamo.getTipoPrestamoId(),
+                        solicitudPrestamo.getTipoPrestamo() != null ? solicitudPrestamo.getTipoPrestamo().getNombre() : null))
                 .orElse(null);
     }
 }

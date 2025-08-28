@@ -1,6 +1,6 @@
 package co.com.pragma.r2dbc.repository;
 
-import co.com.pragma.r2dbc.entities.TipoPrestamoData;
+import co.com.pragma.r2dbc.model.entities.TipoPrestamoData;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 

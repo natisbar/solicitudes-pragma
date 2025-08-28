@@ -1,7 +1,7 @@
 package co.com.pragma.r2dbc.adapter;
 
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
-import co.com.pragma.r2dbc.entities.SolicitudPrestamoData;
+import co.com.pragma.r2dbc.model.entities.SolicitudPrestamoData;
 import co.com.pragma.r2dbc.repository.SolicitudPrestamoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +54,7 @@ class SolicitudPrestamoRepositoryAdapterTest {
 
     @Test
     void debeVerSiExistePorEmailYTipoPrestamoIdSinFinalizar() {
-        when(repository.existsByEmailAndTipoPrestamoIdAndEstadoIdNotIn(anyString(), anyLong(), anyList())).thenReturn(Mono.just(true));
+        when(repository.existsByCorreoAndTipoPrestamoIdAndEstadoIdNotIn(anyString(), anyLong(), anyList())).thenReturn(Mono.just(true));
 
         Mono<Boolean> result = repositoryAdapter.existePorEmailYTipoPrestamoIdSinFinalizar("correo@corre.com", 1L, List.of(1L));
 

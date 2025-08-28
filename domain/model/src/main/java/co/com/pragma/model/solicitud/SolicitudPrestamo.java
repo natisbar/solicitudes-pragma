@@ -17,7 +17,7 @@ public class SolicitudPrestamo {
     private Long id;
     private BigDecimal monto;
     private Integer plazo;
-    private String email;
+    private String correo;
     private Long estadoId;
     private Long tipoPrestamoId;
     private Estado estado;

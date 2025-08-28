@@ -1,4 +1,4 @@
-package co.com.pragma.r2dbc.entities;
+package co.com.pragma.r2dbc.model.entities;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -22,7 +22,7 @@ public class SolicitudPrestamoData {
     @Column("plazo")
     private Integer plazo;
     @Column("email")
-    private String email;
+    private String correo;
     @Column("id_estado")
     private Long estadoId;
     @Column("id_tipo_prestamo")

@@ -2,7 +2,7 @@ package co.com.pragma.r2dbc.adapter;
 
 import co.com.pragma.model.solicitud.TipoPrestamo;
 import co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway;
-import co.com.pragma.r2dbc.entities.TipoPrestamoData;
+import co.com.pragma.r2dbc.model.entities.TipoPrestamoData;
 import co.com.pragma.r2dbc.helper.ReactiveAdapterOperations;
 import co.com.pragma.r2dbc.repository.TipoPrestamoRepository;
 import org.reactivecommons.utils.ObjectMapper;

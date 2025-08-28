@@ -29,9 +29,23 @@ public enum Estado {
                 .orElse(null);
     }
 
+    public static Estado obtenerPorDescripcion(String descripcion){
+        return Arrays.stream(Estado.values())
+                .filter(estado -> estado.getValor().equals(descripcion))
+                .findFirst()
+                .orElse(null);
+    }
+
+
     public static List<Estado> obtenerEstadosFinalizados(){
         return Arrays.stream(Estado.values())
                 .filter(estado -> estado.esFinalizado)
+                .toList();
+    }
+
+    public static List<Estado> obtenerEstadosSinFinalizar(){
+        return Arrays.stream(Estado.values())
+                .filter(estado -> !estado.esFinalizado)
                 .toList();
     }
 }

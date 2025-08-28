@@ -22,9 +22,9 @@ public record PrestamoSolicitudDto(
         String plazo,
 
         @Schema(example = "laura.mendez@gmail.com")
-        @NotBlank(message = "El email es obligatorio y no puede estar vacio")
+        @NotBlank(message = "El correo es obligatorio y no puede estar vacio")
         @Pattern(regexp = PATRON_CORREO, message = "El formato del correo electronico no es correcto")
-        String email,
+        String correo,
 
         @Schema(example = "1")
         @NotBlank(message = "El tipo de prestamo es obligatorio y no puede estar vacio")

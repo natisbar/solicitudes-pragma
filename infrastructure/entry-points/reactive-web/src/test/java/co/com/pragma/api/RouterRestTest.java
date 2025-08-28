@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(classes = {RouterRest.class, Handler.class, ValidacionManejador.class, Validator.class
+@ContextConfiguration(classes = {RouterRest.class, SolicitudHandler.class, ValidacionManejador.class, Validator.class
         , GenerarSolicitudUseCase.class, SolicitudMapper.class, ManejadorGlobalErrores.class})
 @WebFluxTest
 class RouterRestTest {
