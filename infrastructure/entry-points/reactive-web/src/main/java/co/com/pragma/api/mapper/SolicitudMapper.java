@@ -35,7 +35,13 @@ public class SolicitudMapper {
                         obtenerPorId(solicitudPrestamo.getEstadoId()) != null ?
                                 obtenerPorId(solicitudPrestamo.getEstadoId()).getValor() : null,
                         solicitudPrestamo.getTipoPrestamoId(),
-                        solicitudPrestamo.getTipoPrestamo() != null ? solicitudPrestamo.getTipoPrestamo().getNombre() : null))
+                        solicitudPrestamo.getTipoPrestamo() != null ? solicitudPrestamo.getTipoPrestamo().getNombre() : null,
+                        solicitudPrestamo.getSolicitante() != null ? solicitudPrestamo.getSolicitante().getNombres() : null,
+                        solicitudPrestamo.getSolicitante() != null ? solicitudPrestamo.getSolicitante().getSalarioBase() : null,
+                        solicitudPrestamo.getTipoPrestamo() != null ? solicitudPrestamo.getTipoPrestamo().getTasaInteres() : null,
+                        null
+                        )
+                )
                 .orElse(null);
     }
 }

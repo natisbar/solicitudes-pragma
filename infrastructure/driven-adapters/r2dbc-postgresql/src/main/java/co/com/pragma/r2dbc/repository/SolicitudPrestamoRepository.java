@@ -31,7 +31,8 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
                 s.id_estado as idestado,
                 e.nombre as estado,
                 s.id_tipo_prestamo as idtipoprestamo,
-                tp.nombre as tipoprestamo
+                tp.nombre as tipoprestamo,
+                tp.tasa_interes as tasainteres
             FROM solicitudes.solicitud AS s
             INNER JOIN solicitudes.estado as e ON e.id_estado = s.id_estado
             INNER JOIN solicitudes.tipo_prestamo as tp ON tp.id_tipo_prestamo = s.id_tipo_prestamo
@@ -49,7 +50,8 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
                 s.id_estado as idestado,
                 e.nombre as estado,
                 s.id_tipo_prestamo as idtipoprestamo,
-                tp.nombre as tipoprestamo
+                tp.nombre as tipoprestamo,
+                tp.tasa_interes as tasainteres
             FROM solicitudes.solicitud AS s
             INNER JOIN solicitudes.estado as e ON e.id_estado = s.id_estado
             INNER JOIN solicitudes.tipo_prestamo as tp ON tp.id_tipo_prestamo = s.id_tipo_prestamo
@@ -70,7 +72,8 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
                 s.id_estado as idestado,
                 e.nombre as estado,
                 s.id_tipo_prestamo as idtipoprestamo,
-                tp.nombre as tipoprestamo
+                tp.nombre as tipoprestamo,
+                tp.tasa_interes as tasainteres
             FROM solicitudes.solicitud AS s
             INNER JOIN solicitudes.estado as e ON e.id_estado = s.id_estado
             INNER JOIN solicitudes.tipo_prestamo as tp ON tp.id_tipo_prestamo = s.id_tipo_prestamo
@@ -89,7 +92,8 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
                 s.id_estado as idestado,
                 e.nombre as estado,
                 s.id_tipo_prestamo as idtipoprestamo,
-                tp.nombre as tipoprestamo
+                tp.nombre as tipoprestamo,
+                tp.tasa_interes as tasainteres
             FROM solicitudes.solicitud AS s
             INNER JOIN solicitudes.estado as e ON e.id_estado = s.id_estado
             INNER JOIN solicitudes.tipo_prestamo as tp ON tp.id_tipo_prestamo = s.id_tipo_prestamo

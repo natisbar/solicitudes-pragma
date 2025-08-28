@@ -22,4 +22,6 @@ public class SolicitudPrestamo {
     private Long tipoPrestamoId;
     private Estado estado;
     private TipoPrestamo tipoPrestamo;
+    private Usuario solicitante;
+    private BigDecimal deudaTotalMensualSolicitudesAprobadas;
 }

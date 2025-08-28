@@ -9,4 +9,8 @@ public record PrestamoRespuestaDto(
         Long estadoId,
         String estadoDescripcion,
         Long tipoPrestamoId,
-        String tipoPrestamoDescripcion){}
+        String tipoPrestamoDescripcion,
+        String nombreSolicitante,
+        BigDecimal salarioBaseSolicitante,
+        BigDecimal tasaInteres,
+        BigDecimal deudaTotalMensualSolicitudesAprobadas){}

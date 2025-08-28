@@ -14,6 +14,6 @@ public class TipoPrestamo {
     private String nombre;
     private BigDecimal montoMinimo;
     private BigDecimal montoMaximo;
-    private Float tasaInteres;
+    private BigDecimal tasaInteres;
     private Boolean validacionAutomatica;
 }
