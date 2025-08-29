@@ -1,6 +1,7 @@
 package co.com.pragma.api.exception;
 
 import co.com.pragma.model.solicitud.common.ex.ConflictoException;
+import co.com.pragma.model.solicitud.common.ex.IndisponibilidadException;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class ManejadorGlobalErrores extends AbstractErrorWebExceptionHandler {
         super.setMessageWriters(serverCodecConfigurer.getWriters());
         httpStatusCodes.put(NegocioException.class, HttpStatus.BAD_REQUEST);
         httpStatusCodes.put(ConflictoException.class, HttpStatus.CONFLICT);
+        httpStatusCodes.put(IndisponibilidadException.class, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     private Mono<ServerResponse> construirRespuestaError(ServerRequest request) {
@@ -44,7 +46,8 @@ public class ManejadorGlobalErrores extends AbstractErrorWebExceptionHandler {
 
         if (!(throwable instanceof NegocioException) && !Exceptions.isMultiple(throwable)
                 && !(throwable instanceof WebExchangeBindException)
-                && !(throwable instanceof ConstraintViolationException)) {
+                && !(throwable instanceof ConstraintViolationException)
+                && !(throwable instanceof IndisponibilidadException)) {
             responseCode = throwable instanceof ResponseStatusException responseStatusException ?
                     HttpStatus.valueOf(responseStatusException.getStatusCode().value()) :
                     HttpStatus.INTERNAL_SERVER_ERROR;
