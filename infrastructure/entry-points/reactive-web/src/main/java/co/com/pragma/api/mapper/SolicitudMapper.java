@@ -39,7 +39,7 @@ public class SolicitudMapper {
                         solicitudPrestamo.getSolicitante() != null ? solicitudPrestamo.getSolicitante().getNombres() : null,
                         solicitudPrestamo.getSolicitante() != null ? solicitudPrestamo.getSolicitante().getSalarioBase() : null,
                         solicitudPrestamo.getTipoPrestamo() != null ? solicitudPrestamo.getTipoPrestamo().getTasaInteres() : null,
-                        null
+                        solicitudPrestamo.getDeudaTotalMensualSolicitudesAprobadas()
                         )
                 )
                 .orElse(null);

@@ -9,6 +9,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<SolicitudPrestamoData, Long>, ReactiveQueryByExampleExecutor<SolicitudPrestamoData> {
@@ -22,6 +23,15 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
     Mono<Long> countByEstadoIdInAndCorreo(List<Long> estados, String correo);
 
     Mono<Long> countByEstadoIdInAndTipoPrestamoId(List<Long> estados, Long tipoPrestamoId);
+
+    @Query("""
+            SELECT
+                SUM(monto / plazo) AS deuda_total_mensual_solicitudes_aprobadas
+            FROM solicitudes.solicitud
+            WHERE id_estado = 4
+                AND email = :correo
+            """)
+    Mono<BigDecimal> obtenerDeudaTotalMensualSolicitudesAprobadas(@Param("correo") String correo);
 
     @Query("""
             SELECT s.id_solicitud as idsolicitud,
