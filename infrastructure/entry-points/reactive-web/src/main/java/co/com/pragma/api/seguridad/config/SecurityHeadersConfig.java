@@ -1,4 +1,4 @@
-package co.com.pragma.api.config;
+package co.com.pragma.api.seguridad.config;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

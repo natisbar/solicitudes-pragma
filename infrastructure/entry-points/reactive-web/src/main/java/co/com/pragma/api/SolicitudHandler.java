@@ -11,6 +11,9 @@ import co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.ObtenerSolicitudUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,12 +30,17 @@ public class SolicitudHandler {
     private final SolicitudMapper solicitudMapper;
 
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(PrestamoSolicitudDto.class)
-                .flatMap(validacionManejador::validar)
-                .map(solicitudMapper::convertirDesde)
-                .flatMap(generarSolicitudUseCase::ejecutar)
-                .map(solicitudMapper::convertirA)
-                .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED).bodyValue(dto));
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .cast(String.class)
+                .flatMap(correo -> serverRequest.bodyToMono(PrestamoSolicitudDto.class)
+                        .flatMap(validacionManejador::validar)
+                        .map(prestamoSolicitudDto ->
+                                solicitudMapper.convertirDesde(prestamoSolicitudDto, correo))
+                        .flatMap(generarSolicitudUseCase::ejecutar)
+                        .map(solicitudMapper::convertirA)
+                        .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED).bodyValue(dto)));
     }
 
     public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {

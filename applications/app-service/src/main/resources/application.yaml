@@ -21,6 +21,9 @@ adapters:
     schema: "solicitudes"
     username: "postgres"
     password: 1234
+security:
+  jwt:
+    secretkey: "Bardelhaus1234567890Bardelhaus1234567890$"
 management:
   endpoints:
     web:

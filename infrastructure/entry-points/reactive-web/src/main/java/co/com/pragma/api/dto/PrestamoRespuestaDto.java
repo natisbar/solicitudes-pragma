@@ -1,7 +1,10 @@
 package co.com.pragma.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record PrestamoRespuestaDto(
         BigDecimal monto,
         Integer plazo,

@@ -13,12 +13,12 @@ import static co.com.pragma.model.solicitud.enums.Estado.obtenerPorId;
 
 @Component
 public class SolicitudMapper {
-    public SolicitudPrestamo convertirDesde(PrestamoSolicitudDto dto) {
+    public SolicitudPrestamo convertirDesde(PrestamoSolicitudDto dto, String usuario) {
         return Optional.ofNullable(dto)
                 .map(prestamoSolicitudDto -> SolicitudPrestamo.builder()
                         .monto(new BigDecimal(prestamoSolicitudDto.monto()))
                         .plazo(Integer.parseInt(prestamoSolicitudDto.plazo()))
-                        .correo(prestamoSolicitudDto.correo())
+                        .correo(usuario)
                         .tipoPrestamoId(Long.parseLong(prestamoSolicitudDto.tipoPrestamoId()))
                         .estadoId(Estado.PENDIENTE.getId())
                         .build())

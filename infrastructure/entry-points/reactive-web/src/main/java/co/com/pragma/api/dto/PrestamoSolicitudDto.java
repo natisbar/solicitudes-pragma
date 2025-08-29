@@ -21,11 +21,6 @@ public record PrestamoSolicitudDto(
         @Pattern(regexp = PATRON_ENTERO_POSITIVO, message = "El plazo(meses) es numerico y debe ser mayor a 0")
         String plazo,
 
-        @Schema(example = "laura.mendez@gmail.com")
-        @NotBlank(message = "El correo es obligatorio y no puede estar vacio")
-        @Pattern(regexp = PATRON_CORREO, message = "El formato del correo electronico no es correcto")
-        String correo,
-
         @Schema(example = "1")
         @NotBlank(message = "El tipo de prestamo es obligatorio y no puede estar vacio")
         @Pattern(regexp = PATRON_ENTERO_POSITIVO, message = "El id del tipo de prestamo es numerico y debe ser mayor a 0")

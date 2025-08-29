@@ -1,4 +1,4 @@
-package co.com.pragma.api.config;
+package co.com.pragma.api.seguridad.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
