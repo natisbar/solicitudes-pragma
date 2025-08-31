@@ -2,6 +2,7 @@ package co.com.pragma.config;
 
 import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
 import co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway;
+import co.com.pragma.model.solicitud.gateways.UsuarioGateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +44,11 @@ class UseCasesConfigTest {
         @Bean
         public SolicitudPrestamoGateway solicitudPrestamoGateway() {
             return mock(SolicitudPrestamoGateway.class);
+        }
+
+        @Bean
+        public UsuarioGateway usuarioGateway() {
+            return mock(UsuarioGateway.class);
         }
     }
 }

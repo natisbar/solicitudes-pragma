@@ -30,10 +30,10 @@ class GenerarSolicitudUseCaseTest {
 
     @Test
     void debeCrearElUsuario() {
-        SolicitudPrestamo solicitudPrestamo = SolicitudPrestamo.builder().tipoPrestamoId(1L).email("email@email.com").build();
+        SolicitudPrestamo solicitudPrestamo = SolicitudPrestamo.builder().tipoPrestamoId(1L).correo("email@email.com").build();
 
         when(tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())).thenReturn(Mono.just(true));
-        when(solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(solicitudPrestamo.getEmail(),
+        when(solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(solicitudPrestamo.getCorreo(),
                 solicitudPrestamo.getTipoPrestamoId(),
                 obtenerEstadosFinalizados().stream()
                         .map(Estado::getId)
@@ -49,7 +49,7 @@ class GenerarSolicitudUseCaseTest {
 
     @Test
     void debeGenerarExcepcion_tipoPrestamoIdNoExiste() {
-        SolicitudPrestamo solicitudPrestamo = SolicitudPrestamo.builder().tipoPrestamoId(1L).email("email@email.com").build();
+        SolicitudPrestamo solicitudPrestamo = SolicitudPrestamo.builder().tipoPrestamoId(1L).correo("email@email.com").build();
 
         when(tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())).thenReturn(Mono.just(false));
 
@@ -65,10 +65,10 @@ class GenerarSolicitudUseCaseTest {
 
     @Test
     void debeGenerarExcepcion_existeSolicitudConMismoTipoPrestamoActivo() {
-        SolicitudPrestamo solicitudPrestamo = SolicitudPrestamo.builder().tipoPrestamoId(1L).email("email@email.com").build();
+        SolicitudPrestamo solicitudPrestamo = SolicitudPrestamo.builder().tipoPrestamoId(1L).correo("email@email.com").build();
 
         when(tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())).thenReturn(Mono.just(true));
-        when(solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(solicitudPrestamo.getEmail(),
+        when(solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(solicitudPrestamo.getCorreo(),
                 solicitudPrestamo.getTipoPrestamoId(),
                 obtenerEstadosFinalizados().stream()
                         .map(Estado::getId)

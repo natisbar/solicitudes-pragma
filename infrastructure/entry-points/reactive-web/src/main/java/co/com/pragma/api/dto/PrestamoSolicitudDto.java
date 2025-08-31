@@ -8,7 +8,7 @@ import static co.com.pragma.api.common.Constantes.*;
 
 @Schema(
         name = "PrestamoSolicitudDto",
-        requiredProperties = {"monto", "plazo", "email", "tipoPrestamoId"}
+        requiredProperties = {"monto", "plazo", "tipoPrestamoId"}
 )
 public record PrestamoSolicitudDto(
         @Schema(example = "2000000")
