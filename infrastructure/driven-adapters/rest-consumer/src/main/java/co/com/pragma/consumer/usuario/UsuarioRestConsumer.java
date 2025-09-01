@@ -26,24 +26,6 @@ public class UsuarioRestConsumer implements UsuarioGateway{
     public static final String ERROR_CONSUMO_SERVICIO_REST_USUARIO = "Hay indisponibilidad en la api de usuarios. Por favor comuniquese con un administrador del sistema.";
     private static final Logger logger = LoggerFactory.getLogger(UsuarioRestConsumer.class);
 
-
-    // these methods are an example that illustrates the implementation of WebClient.
-    // You should use the methods that you implement from the Gateway from the domain.
-//    @CircuitBreaker(name = "testGet" /*, fallbackMethod = "testGetOk"*/)
-//    public Mono<List<UsuarioDto>> testGet() {
-//        return client
-//                .get()
-//                .retrieve()
-//                .bodyToMono(new ParameterizedTypeReference<List<UsuarioDto>>() {});
-//    }
-
-// Possible fallback method
-//    public Mono<String> testGetOk(Exception ignored) {
-//        return client
-//                .get() // TODO: change for another endpoint or destination
-//                .retrieve()
-//                .bodyToMono(String.class);
-//    }
     @Override
     @CircuitBreaker(name = "testPost" /*, fallbackMethod = "testGetOk"*/)
     public Flux<Usuario> obtenerPorListaCorreos(List<String> correos) {
