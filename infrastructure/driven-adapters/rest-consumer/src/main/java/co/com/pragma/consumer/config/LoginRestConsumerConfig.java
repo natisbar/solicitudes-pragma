@@ -15,18 +15,18 @@ import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Configuration
-public class UsuarioRestConsumerConfig {
+public class LoginRestConsumerConfig {
 
     private final String url;
     private final int timeout;
 
-    public UsuarioRestConsumerConfig(@Value("${adapter.restconsumer.url}") String url,
-                                     @Value("${adapter.restconsumer.timeout}") int timeout) {
+    public LoginRestConsumerConfig(@Value("${adapter.restconsumer-login.url}") String url,
+                                   @Value("${adapter.restconsumer-login.timeout}") int timeout) {
         this.url = url;
         this.timeout = timeout;
     }
 
-    @Bean("usuario")
+    @Bean("login")
     public WebClient getWebClient(WebClient.Builder builder) {
         return builder
             .baseUrl(url)

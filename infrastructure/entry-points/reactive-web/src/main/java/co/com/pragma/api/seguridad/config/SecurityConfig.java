@@ -18,8 +18,8 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers(HttpMethod.POST, "/v1/solicitudes").hasAnyRole("CLIENTE")
                         .pathMatchers(HttpMethod.GET, "/v1/solicitudes").hasAnyRole("ASESOR")
+                        .pathMatchers(HttpMethod.POST, "/v1/solicitudes").hasAnyRole("CLIENTE")
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)

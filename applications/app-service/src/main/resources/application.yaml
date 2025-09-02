@@ -42,6 +42,11 @@ adapter:
   restconsumer:
     timeout: 5000
     url: "http://localhost:8080/api/v1/usuarios/por-correos"
+  restconsumer-login:
+    timeout: 5000
+    url: "http://localhost:8080/api/v1/login"
+    username: "jandreaj100@gmail.com"
+    password: "Bardelhaus1$"
 resilience4j:
   circuitbreaker:
     instances:
