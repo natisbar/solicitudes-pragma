@@ -1,34 +1,24 @@
 package co.com.pragma.consumer;
 
-
 import co.com.pragma.consumer.usuario.LoginRestConsumer;
-import co.com.pragma.consumer.usuario.UsuarioRestConsumer;
 import co.com.pragma.model.solicitud.common.ex.IndisponibilidadException;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
 import java.io.IOException;
-import java.util.List;
 
-import static org.mockito.Mockito.when;
+class LoginRestConsumerTest {
 
-
-class UsuarioRestConsumerTest {
-
-    private static MockWebServer mockBackEnd;
-    private static UsuarioRestConsumer usuarioRestConsumer;
     private static LoginRestConsumer loginRestConsumer;
+    private static MockWebServer mockBackEnd;
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -39,10 +29,7 @@ class UsuarioRestConsumerTest {
                 .baseUrl(mockBackEnd.url("/").toString())
                 .build();
 
-        loginRestConsumer = Mockito.mock(LoginRestConsumer.class);
-        when(loginRestConsumer.obtenerToken()).thenReturn(Mono.just("fake-token"));
-
-        usuarioRestConsumer = new UsuarioRestConsumer(webClient, loginRestConsumer);
+        loginRestConsumer = new LoginRestConsumer(webClient, "correo@test.com", "12345");
     }
 
     @AfterAll
@@ -51,57 +38,51 @@ class UsuarioRestConsumerTest {
     }
 
     @Test
-    @DisplayName("Debe retornar lista de usuarios cuando recibe 200")
-    void validateTestGet() {
-        List<String> correos = List.of("correo1@gmail.com", "correo2@gmail.com");
-
+    @DisplayName("Debe retornar token correctamente cuando la API responde 200")
+    void validateObtenerTokenOk() {
         mockBackEnd.enqueue(new MockResponse()
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setResponseCode(HttpStatus.OK.value())
-                .setBody("[{\"nombres\" : \"natalia\"}]"));
+                .setBody("token-abc-123"));
 
-        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos);
+        Mono<String> response = loginRestConsumer.obtenerToken();
 
         StepVerifier.create(response)
-                .expectNextMatches(usuario -> usuario.getNombres().equals("natalia"))
+                .expectNext("token-abc-123")
                 .verifyComplete();
     }
 
     @Test
     @DisplayName("Debe lanzar NegocioException cuando recibe 400")
     void validateBadRequest() {
-        List<String> correos = List.of("correo1@gmail.com");
-
         mockBackEnd.enqueue(new MockResponse()
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setResponseCode(HttpStatus.BAD_REQUEST.value())
-                .setBody("Correo no válido"));
+                .setBody("Credenciales inválidas"));
 
-        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos);
+        Mono<String> response = loginRestConsumer.obtenerToken();
 
         StepVerifier.create(response)
                 .expectErrorMatches(throwable ->
                         throwable instanceof NegocioException &&
-                                throwable.getMessage().contains("Correo no válido"))
+                                throwable.getMessage().contains("Credenciales inválidas"))
                 .verify();
     }
 
     @Test
     @DisplayName("Debe lanzar IndisponibilidadException cuando recibe 500")
     void validateInternalServerError() {
-        List<String> correos = List.of("correo1@gmail.com");
-
         mockBackEnd.enqueue(new MockResponse()
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .setBody("Error interno del servidor"));
 
-        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos);
+        Mono<String> response = loginRestConsumer.obtenerToken();
 
         StepVerifier.create(response)
                 .expectErrorMatches(throwable ->
                         throwable instanceof IndisponibilidadException &&
-                                throwable.getMessage().contains(UsuarioRestConsumer.ERROR_CONSUMO_SERVICIO_REST_USUARIO))
+                                throwable.getMessage().contains(LoginRestConsumer.ERROR_CONSUMO_SERVICIO_REST_USUARIO))
                 .verify();
     }
 }
