@@ -18,6 +18,11 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/swagger-ui.html").permitAll()
+                        .pathMatchers("/swagger-ui/**").permitAll()
+                        .pathMatchers("/v3/api-docs/**").permitAll()
+                        .pathMatchers("/swagger-resources/**").permitAll()
+                        .pathMatchers("/webjars/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/v1/solicitudes").hasAnyRole("ASESOR")
                         .pathMatchers(HttpMethod.POST, "/v1/solicitudes").hasAnyRole("CLIENTE")
                         .anyExchange().authenticated()
@@ -25,5 +30,4 @@ public class SecurityConfig {
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
-
 }
