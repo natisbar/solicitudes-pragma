@@ -1,7 +1,6 @@
 package co.com.pragma.consumer;
 
 
-import co.com.pragma.consumer.usuario.LoginRestConsumer;
 import co.com.pragma.consumer.usuario.UsuarioRestConsumer;
 import co.com.pragma.model.solicitud.common.ex.IndisponibilidadException;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
@@ -11,24 +10,20 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
 import java.io.IOException;
 import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 
 class UsuarioRestConsumerTest {
 
     private static MockWebServer mockBackEnd;
     private static UsuarioRestConsumer usuarioRestConsumer;
-    private static LoginRestConsumer loginRestConsumer;
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -39,10 +34,7 @@ class UsuarioRestConsumerTest {
                 .baseUrl(mockBackEnd.url("/").toString())
                 .build();
 
-        loginRestConsumer = Mockito.mock(LoginRestConsumer.class);
-        when(loginRestConsumer.obtenerToken()).thenReturn(Mono.just("fake-token"));
-
-        usuarioRestConsumer = new UsuarioRestConsumer(webClient, loginRestConsumer);
+        usuarioRestConsumer = new UsuarioRestConsumer(webClient);
     }
 
     @AfterAll
@@ -60,7 +52,7 @@ class UsuarioRestConsumerTest {
                 .setResponseCode(HttpStatus.OK.value())
                 .setBody("[{\"nombres\" : \"natalia\"}]"));
 
-        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos);
+        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos, "sasdsa2323");
 
         StepVerifier.create(response)
                 .expectNextMatches(usuario -> usuario.getNombres().equals("natalia"))
@@ -77,12 +69,31 @@ class UsuarioRestConsumerTest {
                 .setResponseCode(HttpStatus.BAD_REQUEST.value())
                 .setBody("Correo no válido"));
 
-        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos);
+        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos, "sasdsa2323");
 
         StepVerifier.create(response)
                 .expectErrorMatches(throwable ->
                         throwable instanceof NegocioException &&
                                 throwable.getMessage().contains("Correo no válido"))
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Debe lanzar IndisponibilidadException cuando recibe 401")
+    void validateUnauthorized() {
+        List<String> correos = List.of("correo1@gmail.com");
+
+        mockBackEnd.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.UNAUTHORIZED.value())
+                .setBody("Token inválido o expirado"));
+
+        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos, "sasdsa2323");
+
+        StepVerifier.create(response)
+                .expectErrorMatches(throwable ->
+                        throwable instanceof IndisponibilidadException &&
+                                throwable.getMessage().contains("Token inválido o expirado"))
                 .verify();
     }
 
@@ -96,7 +107,7 @@ class UsuarioRestConsumerTest {
                 .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .setBody("Error interno del servidor"));
 
-        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos);
+        var response = usuarioRestConsumer.obtenerPorListaCorreos(correos, "sasdsa2323");
 
         StepVerifier.create(response)
                 .expectErrorMatches(throwable ->

@@ -10,6 +10,7 @@ import co.com.pragma.api.validador.ValidacionManejador;
 import co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.ObtenerSolicitudUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -44,13 +45,14 @@ public class SolicitudHandler {
     }
 
     public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {
+        String token = serverRequest.headers().firstHeader(HttpHeaders.AUTHORIZATION);
         String tipoPrestamoId = serverRequest.queryParam("tipoPrestamoId").orElse(null);
         String correo = serverRequest.queryParam("correo").orElse(null);
         String pagina = serverRequest.queryParam("pagina").orElse(null);
         String tamano = serverRequest.queryParam("tamano").orElse(null);
         return Mono.just(new FiltroPrestamoDto(pagina, tamano, correo, tipoPrestamoId))
                 .flatMap(validacionManejador::validar)
-                .map(filtroSolicitudMapper::convertirDesde)
+                .map(filtroDto -> filtroSolicitudMapper.convertirDesde(filtroDto, token))
                 .flatMap(obtenerSolicitudUseCase::obtenerPorSolicitudesPendientes)
                 .map(paginacion -> PaginacionDataDto.<PrestamoRespuestaDto>builder()
                         .datos(paginacion.getDatos().stream()

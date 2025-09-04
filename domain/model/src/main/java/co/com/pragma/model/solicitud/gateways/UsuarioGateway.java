@@ -6,5 +6,5 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 public interface UsuarioGateway {
-    Flux<Usuario> obtenerPorListaCorreos(List<String> correos);
+    Flux<Usuario> obtenerPorListaCorreos(List<String> correos, String dataUsuario);
 }

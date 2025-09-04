@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Component
 public class FiltroSolicitudMapper {
-    public FiltroData convertirDesde(FiltroPrestamoDto dto) {
+    public FiltroData convertirDesde(FiltroPrestamoDto dto, String token) {
         return Optional.ofNullable(dto)
                 .map(filtroPrestamo -> FiltroData.builder()
                         .pagina((Integer.parseInt(filtroPrestamo.pagina()) - 1) * Integer.parseInt(filtroPrestamo.tamano()))
@@ -16,6 +16,7 @@ public class FiltroSolicitudMapper {
                         .correo(filtroPrestamo.correo())
                         .tipoPrestamoId(filtroPrestamo.tipoPrestamoId() != null ? Long.parseLong(filtroPrestamo.tipoPrestamoId())
                                 : null)
+                        .dataUsuario(token)
                         .build())
                 .orElse(null);
     }

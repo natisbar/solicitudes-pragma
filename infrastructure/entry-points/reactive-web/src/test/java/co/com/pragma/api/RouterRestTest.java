@@ -1,6 +1,5 @@
 package co.com.pragma.api;
 
-import co.com.pragma.api.dto.PrestamoRespuestaDto;
 import co.com.pragma.api.dto.PrestamoSolicitudDto;
 import co.com.pragma.api.exception.ManejadorGlobalErrores;
 import co.com.pragma.api.mapper.FiltroSolicitudMapper;

@@ -13,6 +13,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase.NO_EXISTE_TIPO_PRESTAMO;
 
@@ -31,13 +33,13 @@ public class ObtenerSolicitudUseCase {
                         return solicitudPrestamoGateway.obtenerPorEstados(estadosId, filtro.getPagina(), filtro.getTamano())
                                 .collectList()
                                 .flatMap(listaSolicitudes -> solicitudPrestamoGateway.contarPorEstados(estadosId)
-                                        .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano())));
+                                        .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano(), filtro.getDataUsuario())));
                     }
                     if (filtro.existeSoloCorreo()){
                         return solicitudPrestamoGateway.obtenerPorEstadosYCorreo(estadosId, filtro.getCorreo(), filtro.getPagina(), filtro.getTamano())
                                 .collectList()
                                 .flatMap(listaSolicitudes -> solicitudPrestamoGateway.contarPorEstadosYCorreo(estadosId, filtro.getCorreo())
-                                        .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano())));
+                                        .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano(), filtro.getDataUsuario())));
                     }
                     return obtenerCuandoTipoPrestamoExiste(filtro, estadosId);
                 });
@@ -52,19 +54,20 @@ public class ObtenerSolicitudUseCase {
                                 filtro.getTipoPrestamoId(), filtro.getPagina(), filtro.getTamano())
                                 .collectList()
                                 .flatMap(listaSolicitudes -> solicitudPrestamoGateway.contarPorEstadosYCorreoYTipoPrestamoId(estadosId, filtro.getCorreo(), filtro.getTipoPrestamoId())
-                                        .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano())));
+                                        .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano(), filtro.getDataUsuario())));
                     }
                     return solicitudPrestamoGateway.obtenerPorEstadosYTipoPrestamoId(estadosId, filtro.getTipoPrestamoId(),
                             filtro.getPagina(), filtro.getTamano())
                             .collectList()
                             .flatMap(listaSolicitudes -> solicitudPrestamoGateway.contarPorEstadosYTipoPrestamoId(estadosId, filtro.getTipoPrestamoId())
-                                    .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano())));
+                                    .flatMap(total -> construirDatosPaginacion(listaSolicitudes, total, filtro.getTamano(), filtro.getDataUsuario())));
                 });
     }
 
     private Mono<PaginacionData<SolicitudPrestamo>> construirDatosPaginacion(List<SolicitudPrestamo> listaSolicitudes, long totalElementos,
-                                                                             long elementosPorPagina){
-        return usuarioGateway.obtenerPorListaCorreos(obtenerListaCorreos(listaSolicitudes))
+                                                                             long elementosPorPagina, String dataUsuario){
+        return usuarioGateway.obtenerPorListaCorreos(obtenerListaCorreos(listaSolicitudes)
+                        .stream().toList(), dataUsuario)
                 .collectList()
                 .flatMapMany(listaUsuarios -> Flux.fromIterable(listaSolicitudes)
                         .flatMap(solicitudPrestamo -> solicitudPrestamoGateway
@@ -85,7 +88,7 @@ public class ObtenerSolicitudUseCase {
                         .build());
     }
 
-    private List<String> obtenerListaCorreos(List<SolicitudPrestamo> listaSolicitudes){
-        return listaSolicitudes.stream().map(SolicitudPrestamo::getCorreo).toList();
+    private Set<String> obtenerListaCorreos(List<SolicitudPrestamo> listaSolicitudes){
+        return listaSolicitudes.stream().map(SolicitudPrestamo::getCorreo).collect(Collectors.toSet());
     }
 }

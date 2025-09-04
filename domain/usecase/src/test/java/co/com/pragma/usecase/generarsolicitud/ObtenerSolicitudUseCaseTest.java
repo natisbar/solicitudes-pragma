@@ -41,12 +41,13 @@ class ObtenerSolicitudUseCaseTest {
         FiltroData filtroData = FiltroData.builder()
                 .pagina(1)
                 .tamano(8)
+                .dataUsuario("token")
                 .build();
         Usuario usuario = Usuario.builder().correoElectronico("email@email.com").build();
 
         when(solicitudPrestamoGateway.obtenerPorEstados(anyList(), anyInt(), anyInt())).thenReturn(Flux.just(solicitudPrestamo));
         when(solicitudPrestamoGateway.contarPorEstados(anyList())).thenReturn(Mono.just(3L));
-        when(usuarioGateway.obtenerPorListaCorreos(anyList())).thenReturn(Flux.just(usuario));
+        when(usuarioGateway.obtenerPorListaCorreos(anyList(), anyString())).thenReturn(Flux.just(usuario));
         when(solicitudPrestamoGateway.obtenerDeudaTotalMensualSolicitudesAprobadas(anyString())).thenReturn(Mono.just(TEN));
 
         Mono<PaginacionData<SolicitudPrestamo>> result = obtenerSolicitudUseCase.obtenerPorSolicitudesPendientes(filtroData);
@@ -72,12 +73,13 @@ class ObtenerSolicitudUseCaseTest {
                 .correo("email@email.com")
                 .pagina(1)
                 .tamano(8)
+                .dataUsuario("token")
                 .build();
         Usuario usuario = Usuario.builder().correoElectronico("email@email.com").build();
 
         when(solicitudPrestamoGateway.obtenerPorEstadosYCorreo(anyList(), anyString(), anyInt(), anyInt())).thenReturn(Flux.just(solicitudPrestamo));
         when(solicitudPrestamoGateway.contarPorEstadosYCorreo(anyList(), anyString())).thenReturn(Mono.just(3L));
-        when(usuarioGateway.obtenerPorListaCorreos(anyList())).thenReturn(Flux.just(usuario));
+        when(usuarioGateway.obtenerPorListaCorreos(anyList(), anyString())).thenReturn(Flux.just(usuario));
         when(solicitudPrestamoGateway.obtenerDeudaTotalMensualSolicitudesAprobadas(anyString())).thenReturn(Mono.just(TEN));
 
         Mono<PaginacionData<SolicitudPrestamo>> result = obtenerSolicitudUseCase.obtenerPorSolicitudesPendientes(filtroData);
@@ -124,13 +126,14 @@ class ObtenerSolicitudUseCaseTest {
                 .tipoPrestamoId(1L)
                 .pagina(1)
                 .tamano(8)
+                .dataUsuario("token")
                 .build();
         Usuario usuario = Usuario.builder().correoElectronico("email@email.com").build();
 
         when(tipoPrestamoGateway.existePorId(anyLong())).thenReturn(Mono.just(true));
         when(solicitudPrestamoGateway.obtenerPorEstadosYCorreoYTipoPrestamoId(anyList(), anyString(), anyLong(), anyInt(), anyInt())).thenReturn(Flux.just(solicitudPrestamo));
         when(solicitudPrestamoGateway.contarPorEstadosYCorreoYTipoPrestamoId(anyList(), anyString(), anyLong())).thenReturn(Mono.just(3L));
-        when(usuarioGateway.obtenerPorListaCorreos(anyList())).thenReturn(Flux.just(usuario));
+        when(usuarioGateway.obtenerPorListaCorreos(anyList(), anyString())).thenReturn(Flux.just(usuario));
         when(solicitudPrestamoGateway.obtenerDeudaTotalMensualSolicitudesAprobadas(anyString())).thenReturn(Mono.just(TEN));
 
         Mono<PaginacionData<SolicitudPrestamo>> result = obtenerSolicitudUseCase.obtenerPorSolicitudesPendientes(filtroData);
@@ -156,13 +159,14 @@ class ObtenerSolicitudUseCaseTest {
                 .tipoPrestamoId(1L)
                 .pagina(1)
                 .tamano(8)
+                .dataUsuario("token")
                 .build();
         Usuario usuario = Usuario.builder().correoElectronico("email@email.com").build();
 
         when(tipoPrestamoGateway.existePorId(anyLong())).thenReturn(Mono.just(true));
         when(solicitudPrestamoGateway.obtenerPorEstadosYTipoPrestamoId(anyList(), anyLong(), anyInt(), anyInt())).thenReturn(Flux.just(solicitudPrestamo));
         when(solicitudPrestamoGateway.contarPorEstadosYTipoPrestamoId(anyList(), anyLong())).thenReturn(Mono.just(3L));
-        when(usuarioGateway.obtenerPorListaCorreos(anyList())).thenReturn(Flux.just(usuario));
+        when(usuarioGateway.obtenerPorListaCorreos(anyList(), anyString())).thenReturn(Flux.just(usuario));
         when(solicitudPrestamoGateway.obtenerDeudaTotalMensualSolicitudesAprobadas(anyString())).thenReturn(Mono.just(TEN));
 
         Mono<PaginacionData<SolicitudPrestamo>> result = obtenerSolicitudUseCase.obtenerPorSolicitudesPendientes(filtroData);

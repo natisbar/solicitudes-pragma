@@ -26,7 +26,7 @@ public class UsuarioRestConsumerConfig {
         this.timeout = timeout;
     }
 
-    @Bean("usuario")
+    @Bean
     public WebClient getWebClient(WebClient.Builder builder) {
         return builder
             .baseUrl(url)

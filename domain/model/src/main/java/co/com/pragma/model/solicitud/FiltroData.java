@@ -11,6 +11,7 @@ public class FiltroData {
     private Long tipoPrestamoId;
     private int pagina;
     private int tamano;
+    private String dataUsuario;
 
     public boolean todoNull(){
         return tipoPrestamoId == null && esVacio(correo);
