@@ -26,7 +26,7 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
 
     @Query("""
             SELECT
-                SUM(monto / plazo) AS deuda_total_mensual_solicitudes_aprobadas
+                COALESCE(SUM(monto / plazo), 0) AS deuda_total_mensual_solicitudes_aprobadas
             FROM solicitudes.solicitud
             WHERE id_estado = 4
                 AND email = :correo
