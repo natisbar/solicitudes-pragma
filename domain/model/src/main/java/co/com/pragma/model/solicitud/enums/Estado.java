@@ -1,5 +1,6 @@
 package co.com.pragma.model.solicitud.enums;
 
+import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -31,9 +32,9 @@ public enum Estado {
 
     public static Estado obtenerPorDescripcion(String descripcion){
         return Arrays.stream(Estado.values())
-                .filter(estado -> estado.getValor().equals(descripcion))
+                .filter(estado -> estado.getValor().equals(descripcion.toUpperCase()))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NegocioException("El estado recibido no existe"));
     }
 
 

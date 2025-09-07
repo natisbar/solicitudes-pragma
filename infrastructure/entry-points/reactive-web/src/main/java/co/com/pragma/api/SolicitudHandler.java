@@ -1,12 +1,10 @@
 package co.com.pragma.api;
 
-import co.com.pragma.api.dto.FiltroPrestamoDto;
-import co.com.pragma.api.dto.PaginacionDataDto;
-import co.com.pragma.api.dto.PrestamoRespuestaDto;
-import co.com.pragma.api.dto.PrestamoSolicitudDto;
+import co.com.pragma.api.dto.*;
 import co.com.pragma.api.mapper.FiltroSolicitudMapper;
 import co.com.pragma.api.mapper.SolicitudMapper;
 import co.com.pragma.api.validador.ValidacionManejador;
+import co.com.pragma.usecase.generarsolicitud.ActualizarEstadoSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.ObtenerSolicitudUseCase;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,7 @@ public class SolicitudHandler {
     private final ValidacionManejador validacionManejador;
     private final GenerarSolicitudUseCase generarSolicitudUseCase;
     private final ObtenerSolicitudUseCase obtenerSolicitudUseCase;
+    private final ActualizarEstadoSolicitudUseCase actualizarEstadoSolicitudUseCase;
     private final FiltroSolicitudMapper filtroSolicitudMapper;
     private final SolicitudMapper solicitudMapper;
 
@@ -42,6 +41,14 @@ public class SolicitudHandler {
                         .flatMap(generarSolicitudUseCase::ejecutar)
                         .map(solicitudMapper::convertirA)
                         .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED).bodyValue(dto)));
+    }
+
+    public Mono<ServerResponse> listenPUTUseCase(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(PrestamoSolicitudActualizarDto.class)
+                .flatMap(validacionManejador::validar)
+                .map(solicitudMapper::convertirDesde)
+                .flatMap(actualizarEstadoSolicitudUseCase::ejecutar)
+                .flatMap(respuesta -> ServerResponse.status(HttpStatus.CREATED).bodyValue(respuesta));
     }
 
     public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {

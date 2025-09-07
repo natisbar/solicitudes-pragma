@@ -1,6 +1,7 @@
 package co.com.pragma.api.mapper;
 
 import co.com.pragma.api.dto.PrestamoRespuestaDto;
+import co.com.pragma.api.dto.PrestamoSolicitudActualizarDto;
 import co.com.pragma.api.dto.PrestamoSolicitudDto;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.enums.Estado;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static co.com.pragma.model.solicitud.enums.Estado.obtenerPorDescripcion;
 import static co.com.pragma.model.solicitud.enums.Estado.obtenerPorId;
 
 @Component
@@ -21,6 +23,16 @@ public class SolicitudMapper {
                         .correo(usuario)
                         .tipoPrestamoId(Long.parseLong(prestamoSolicitudDto.tipoPrestamoId()))
                         .estadoId(Estado.PENDIENTE.getId())
+                        .build())
+                .orElse(null);
+    }
+
+    public SolicitudPrestamo convertirDesde(PrestamoSolicitudActualizarDto dto) {
+        return Optional.ofNullable(dto)
+                .map(prestamoSolicitudDto -> SolicitudPrestamo.builder()
+                        .id(Long.valueOf(prestamoSolicitudDto.id()))
+                        .estado(obtenerPorDescripcion(prestamoSolicitudDto.estado()))
+                        .estadoId(obtenerPorDescripcion(prestamoSolicitudDto.estado()).getId())
                         .build())
                 .orElse(null);
     }

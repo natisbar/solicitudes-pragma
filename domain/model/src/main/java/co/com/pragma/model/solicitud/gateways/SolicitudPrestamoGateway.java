@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface SolicitudPrestamoGateway {
+    Mono<SolicitudPrestamo> obtenerPorId(Long idSolicitud);
     Mono<SolicitudPrestamo> guardar(SolicitudPrestamo solicitudPrestamo);
     Mono<Boolean> existePorEmailYTipoPrestamoIdSinFinalizar(String correo, Long tipoSolicitudId, List<Long> estados);
     Flux<SolicitudPrestamo> obtenerPorEstados(List<Long> estados, int pagina, int tamano);
@@ -19,4 +20,5 @@ public interface SolicitudPrestamoGateway {
     Mono<Long> contarPorEstadosYCorreo(List<Long> estados, String correo);
     Mono<Long> contarPorEstadosYTipoPrestamoId(List<Long> estados, Long tipoPrestamoId);
     Mono<BigDecimal> obtenerDeudaTotalMensualSolicitudesAprobadas(String correo);
+    Mono<Void> actualizarEstado(SolicitudPrestamo solicitudPrestamo);
 }

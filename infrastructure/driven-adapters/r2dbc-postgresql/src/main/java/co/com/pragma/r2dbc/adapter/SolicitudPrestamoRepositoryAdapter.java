@@ -31,6 +31,11 @@ public class SolicitudPrestamoRepositoryAdapter extends ReactiveAdapterOperation
     }
 
     @Override
+    public Mono<SolicitudPrestamo> obtenerPorId(Long idSolicitud) {
+        return findById(idSolicitud);
+    }
+
+    @Override
     public Mono<SolicitudPrestamo> guardar(SolicitudPrestamo solicitudPrestamo) {
         return this.save(solicitudPrestamo)
                 .as(transactionalOperator::transactional);
@@ -88,6 +93,11 @@ public class SolicitudPrestamoRepositoryAdapter extends ReactiveAdapterOperation
     @Override
     public Mono<BigDecimal> obtenerDeudaTotalMensualSolicitudesAprobadas(String correo) {
         return repository.obtenerDeudaTotalMensualSolicitudesAprobadas(correo);
+    }
+
+    @Override
+    public Mono<Void> actualizarEstado(SolicitudPrestamo solicitudPrestamo) {
+        return repository.actualizarEstado(solicitudPrestamo.getEstadoId(), solicitudPrestamo.getId());
     }
 
 }

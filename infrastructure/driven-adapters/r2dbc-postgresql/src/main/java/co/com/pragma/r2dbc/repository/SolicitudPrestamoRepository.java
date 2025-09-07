@@ -25,6 +25,13 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
     Mono<Long> countByEstadoIdInAndTipoPrestamoId(List<Long> estados, Long tipoPrestamoId);
 
     @Query("""
+            UPDATE solicitudes.solicitud
+             SET id_estado = :idEstado
+            WHERE id_solicitud = :idSolicitud
+            """)
+    Mono<Void> actualizarEstado(@Param("idEstado") Long idEstado, @Param("idSolicitud") Long idSolicitud);
+
+    @Query("""
             SELECT
                 COALESCE(SUM(monto / plazo), 0) AS deuda_total_mensual_solicitudes_aprobadas
             FROM solicitudes.solicitud

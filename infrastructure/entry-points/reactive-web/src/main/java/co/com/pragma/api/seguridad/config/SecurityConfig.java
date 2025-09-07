@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .pathMatchers("/swagger-resources/**").permitAll()
                         .pathMatchers("/webjars/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/v1/solicitudes").hasRole("ASESOR")
+                        .pathMatchers(HttpMethod.PUT, "/v1/solicitudes").hasRole("ASESOR")
                         .pathMatchers(HttpMethod.POST, "/v1/solicitudes").hasRole("CLIENTE")
                         .anyExchange().authenticated()
                 )
