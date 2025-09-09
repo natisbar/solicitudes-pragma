@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter implements WebFilter {
                         null,
                         List.of(new SimpleGrantedAuthority("ROLE_" + claims.get("rol")))
                 );
+                ((UsernamePasswordAuthenticationToken) auth).setDetails(claims);
                 return chain.filter(exchange)
                         .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
             } catch (Exception e) {

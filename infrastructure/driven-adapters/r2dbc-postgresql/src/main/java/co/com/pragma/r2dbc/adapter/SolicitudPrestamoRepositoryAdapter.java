@@ -1,6 +1,7 @@
 package co.com.pragma.r2dbc.adapter;
 
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
+import co.com.pragma.model.solicitud.enums.Estado;
 import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
 import co.com.pragma.r2dbc.helper.ReactiveAdapterOperations;
 import co.com.pragma.r2dbc.mapper.SolicitudPrestamoMapper;
@@ -32,7 +33,8 @@ public class SolicitudPrestamoRepositoryAdapter extends ReactiveAdapterOperation
 
     @Override
     public Mono<SolicitudPrestamo> obtenerPorId(Long idSolicitud) {
-        return findById(idSolicitud);
+        return repository.findByIdWithJoin(idSolicitud)
+                .map(solicitudPrestamoMapper::convertirDesde);
     }
 
     @Override

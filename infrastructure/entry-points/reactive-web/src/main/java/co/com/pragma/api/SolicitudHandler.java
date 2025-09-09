@@ -7,6 +7,7 @@ import co.com.pragma.api.validador.ValidacionManejador;
 import co.com.pragma.usecase.generarsolicitud.ActualizarEstadoSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.ObtenerSolicitudUseCase;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
@@ -32,21 +35,24 @@ public class SolicitudHandler {
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
-                .map(Authentication::getPrincipal)
-                .cast(String.class)
-                .flatMap(correo -> serverRequest.bodyToMono(PrestamoSolicitudDto.class)
-                        .flatMap(validacionManejador::validar)
-                        .map(prestamoSolicitudDto ->
-                                solicitudMapper.convertirDesde(prestamoSolicitudDto, correo))
-                        .flatMap(generarSolicitudUseCase::ejecutar)
-                        .map(solicitudMapper::convertirA)
-                        .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED).bodyValue(dto)));
+                .flatMap(auth -> {
+                    String correo = (String) auth.getPrincipal();
+                    Claims claims = (Claims) auth.getDetails();
+                    Double salario = claims.get("salarioBase", Double.class);
+                    return serverRequest.bodyToMono(PrestamoSolicitudDto.class)
+                            .flatMap(validacionManejador::validar)
+                            .map(dto -> solicitudMapper.convertirDesde(dto, correo, salario))
+                            .flatMap(generarSolicitudUseCase::ejecutar)
+                            .map(solicitudMapper::convertirA)
+                            .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED).bodyValue(dto));
+                });
     }
 
     public Mono<ServerResponse> listenPUTUseCase(ServerRequest serverRequest) {
+        String token = serverRequest.headers().firstHeader(HttpHeaders.AUTHORIZATION);
         return serverRequest.bodyToMono(PrestamoSolicitudActualizarDto.class)
                 .flatMap(validacionManejador::validar)
-                .map(solicitudMapper::convertirDesde)
+                .map(prestamoSolicitudActualizarDto -> solicitudMapper.convertirDesde(prestamoSolicitudActualizarDto, token))
                 .flatMap(actualizarEstadoSolicitudUseCase::ejecutar)
                 .flatMap(respuesta -> ServerResponse.status(HttpStatus.CREATED).bodyValue(respuesta));
     }

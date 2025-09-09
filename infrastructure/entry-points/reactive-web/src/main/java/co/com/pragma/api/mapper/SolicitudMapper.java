@@ -4,6 +4,7 @@ import co.com.pragma.api.dto.PrestamoRespuestaDto;
 import co.com.pragma.api.dto.PrestamoSolicitudActualizarDto;
 import co.com.pragma.api.dto.PrestamoSolicitudDto;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
+import co.com.pragma.model.solicitud.Usuario;
 import co.com.pragma.model.solicitud.enums.Estado;
 import org.springframework.stereotype.Component;
 
@@ -15,24 +16,28 @@ import static co.com.pragma.model.solicitud.enums.Estado.obtenerPorId;
 
 @Component
 public class SolicitudMapper {
-    public SolicitudPrestamo convertirDesde(PrestamoSolicitudDto dto, String usuario) {
+    public SolicitudPrestamo convertirDesde(PrestamoSolicitudDto dto, String usuario, Double salarioBase) {
         return Optional.ofNullable(dto)
                 .map(prestamoSolicitudDto -> SolicitudPrestamo.builder()
                         .monto(new BigDecimal(prestamoSolicitudDto.monto()))
                         .plazo(Integer.parseInt(prestamoSolicitudDto.plazo()))
                         .correo(usuario)
+                        .solicitante(Usuario.builder()
+                                .correoElectronico(usuario)
+                                .salarioBase(BigDecimal.valueOf(salarioBase)).build())
                         .tipoPrestamoId(Long.parseLong(prestamoSolicitudDto.tipoPrestamoId()))
                         .estadoId(Estado.PENDIENTE.getId())
                         .build())
                 .orElse(null);
     }
 
-    public SolicitudPrestamo convertirDesde(PrestamoSolicitudActualizarDto dto) {
+    public SolicitudPrestamo convertirDesde(PrestamoSolicitudActualizarDto dto, String token) {
         return Optional.ofNullable(dto)
                 .map(prestamoSolicitudDto -> SolicitudPrestamo.builder()
                         .id(Long.valueOf(prestamoSolicitudDto.id()))
                         .estado(obtenerPorDescripcion(prestamoSolicitudDto.estado()))
                         .estadoId(obtenerPorDescripcion(prestamoSolicitudDto.estado()).getId())
+                        .dataUsuario(token)
                         .build())
                 .orElse(null);
     }

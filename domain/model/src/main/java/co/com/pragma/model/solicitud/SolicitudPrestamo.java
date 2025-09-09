@@ -23,5 +23,6 @@ public class SolicitudPrestamo {
     private Estado estado;
     private TipoPrestamo tipoPrestamo;
     private Usuario solicitante;
+    private String dataUsuario;
     private BigDecimal deudaTotalMensualSolicitudesAprobadas;
 }

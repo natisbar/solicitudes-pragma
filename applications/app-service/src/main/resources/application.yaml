@@ -13,9 +13,6 @@ spring:
       path: "/h2"
   profiles:
     include: null
-#logging:
-#  level:
-#    org.springframework.web.reactive.function.client: DEBUG
 adapters:
   r2dbc:
     host: "localhost"
@@ -49,6 +46,15 @@ adapter:
     path-login: "v1/login"
     username: "jandreaj100@gmail.com"
     password: "Bardelhaus1$"
+  sqs:
+    validacion:
+      region: "us-east-2"
+      queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/Solicitudes.fifo"
+      endpoint: "https://sqs.us-east-2.amazonaws.com"
+    respuesta:
+      region: "us-east-2"
+      queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/Respuesta.fifo"
+      endpoint: "https://sqs.us-east-2.amazonaws.com"
 resilience4j:
   circuitbreaker:
     instances:

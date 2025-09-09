@@ -25,6 +25,23 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
     Mono<Long> countByEstadoIdInAndTipoPrestamoId(List<Long> estados, Long tipoPrestamoId);
 
     @Query("""
+            SELECT s.id_solicitud as idsolicitud,
+                s.monto as monto,
+                s.plazo as plazo,
+                s.email as email,
+                s.id_estado as idestado,
+                e.nombre as estado,
+                s.id_tipo_prestamo as idtipoprestamo,
+                tp.nombre as tipoprestamo,
+                tp.tasa_interes as tasainteres
+            FROM solicitudes.solicitud AS s
+            INNER JOIN solicitudes.estado as e ON e.id_estado = s.id_estado
+            INNER JOIN solicitudes.tipo_prestamo as tp ON tp.id_tipo_prestamo = s.id_tipo_prestamo
+            WHERE s.id_solicitud = :id
+            """)
+    Mono<SolicitudPrestamoDto> findByIdWithJoin(@Param("id") Long id);
+
+    @Query("""
             UPDATE solicitudes.solicitud
              SET id_estado = :idEstado
             WHERE id_solicitud = :idSolicitud
