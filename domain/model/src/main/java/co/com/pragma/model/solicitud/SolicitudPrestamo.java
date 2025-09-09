@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,4 +26,5 @@ public class SolicitudPrestamo {
     private Usuario solicitante;
     private String dataUsuario;
     private BigDecimal deudaTotalMensualSolicitudesAprobadas;
+    private List<CuotaPago> planDePago;
 }

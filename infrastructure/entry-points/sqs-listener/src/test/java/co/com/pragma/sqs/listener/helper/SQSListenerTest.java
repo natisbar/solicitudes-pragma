@@ -2,6 +2,9 @@ package co.com.pragma.sqs.listener.helper;
 
 import co.com.pragma.sqs.listener.SQSProcessor;
 import co.com.pragma.sqs.listener.config.SQSProperties;
+import co.com.pragma.sqs.listener.mapper.PrestamoSolicitudMapper;
+import co.com.pragma.usecase.generarsolicitud.ActualizarEstadoSolicitudUseCase;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -25,7 +28,14 @@ class SQSListenerTest {
 
     @Mock
     private SqsAsyncClient asyncClient;
-
+    @Mock
+    private ActualizarEstadoSolicitudUseCase actualizarEstadoSolicitudUseCase;
+    @Mock
+    private GenerarTokenProvisionalService generarTokenProvisionalService;
+    @Mock
+    private PrestamoSolicitudMapper prestamoSolicitudMapper;
+    @Mock
+    private ObjectMapper objectMapper;
     @Mock
     private SQSProperties sqsProperties;
 
@@ -58,7 +68,8 @@ class SQSListenerTest {
         var sqsListener = SQSListener.builder()
                 .client(asyncClient)
                 .properties(sqsProperties)
-                .processor(new SQSProcessor())
+                .processor(new SQSProcessor(actualizarEstadoSolicitudUseCase, generarTokenProvisionalService,
+                        prestamoSolicitudMapper, objectMapper))
                 .operation("operation")
                 .build();
 

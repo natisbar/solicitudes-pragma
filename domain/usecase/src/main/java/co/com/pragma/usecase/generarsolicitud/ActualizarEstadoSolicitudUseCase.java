@@ -1,5 +1,6 @@
 package co.com.pragma.usecase.generarsolicitud;
 
+import co.com.pragma.model.solicitud.CuotaPago;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import co.com.pragma.model.solicitud.enums.Estado;
@@ -11,6 +12,8 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +47,9 @@ public class ActualizarEstadoSolicitudUseCase {
                                                                 .correo(solicitudEncontrada.getCorreo()).solicitante(usuario)
                                                                 .build(), solicitudEncontrada.getEstado()))
                                                         .doOnSuccess(solicitudFinal -> {
+                                                            if (Estado.APROBADO.equals(solicitudFinal.getEstado())){
+                                                                solicitudFinal.setPlanDePago(generarPlanDePago(solicitudFinal));
+                                                            }
                                                             if (Estado.obtenerEstadosFinalizados().contains(solicitudFinal.getEstado())){
                                                                 notificacionGateway.responder(solicitudFinal)
                                                                         .subscribeOn(Schedulers.boundedElastic())
@@ -79,6 +85,44 @@ public class ActualizarEstadoSolicitudUseCase {
                 })
                 .flatMap(solicitudFinal -> solicitudPrestamoGateway.actualizarEstado(solicitudFinal)
                         .thenReturn(solicitudFinal));
+    }
+
+    private List<CuotaPago> generarPlanDePago(SolicitudPrestamo solicitud) {
+        BigDecimal monto = solicitud.getMonto(); // Monto total
+        int plazo = solicitud.getPlazo();        // Número de cuotas (meses)
+        BigDecimal tasaInteresAnual = solicitud.getTipoPrestamo().getTasaInteres();
+
+        // tasa mensual = anual / 12 / 100
+        BigDecimal tasaMensual = tasaInteresAnual
+                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+
+        // Fórmula de cuota mensual (sistema francés)
+        BigDecimal unoMasTasa = tasaMensual.add(BigDecimal.ONE);
+        BigDecimal factorPotencia = unoMasTasa.pow(plazo);
+        BigDecimal cuotaMensual = monto
+                .multiply(tasaMensual.multiply(factorPotencia))
+                .divide(factorPotencia.subtract(BigDecimal.ONE), 2, RoundingMode.HALF_UP);
+
+        BigDecimal saldoPendiente = monto;
+        List<CuotaPago> planDePago = new ArrayList<>();
+
+        for (int i = 1; i <= plazo; i++) {
+            BigDecimal interes = saldoPendiente.multiply(tasaMensual).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal capital = cuotaMensual.subtract(interes).setScale(2, RoundingMode.HALF_UP);
+            saldoPendiente = saldoPendiente.subtract(capital).setScale(2, RoundingMode.HALF_UP);
+
+            CuotaPago cuota = new CuotaPago();
+            cuota.setNumeroCuota(i);
+            cuota.setCuota(cuotaMensual);
+            cuota.setCapital(capital);
+            cuota.setInteres(interes);
+            cuota.setSaldoRestante(saldoPendiente.max(BigDecimal.ZERO)); // Evita que baje de cero por redondeo
+
+            planDePago.add(cuota);
+        }
+
+        return planDePago;
     }
 
 }

@@ -25,10 +25,36 @@ def lambda_handler(event, context):
             estado = body.get('estado') or ''
             monto = body.get('monto') or ''
             plazo = body.get('plazo') or ''
+            plan_de_pago = body.get('planDePago', [])
+
+            plan_texto = ""
+            if plan_de_pago:
+                plan_texto += "\n\nPlan de Pago:\n"
+                plan_texto += "{:<10} {:<15} {:<15} {:<15} {:<15}\n".format("Cuota", "Capital", "Interés", "Total", "Saldo")
+                for cuota in plan_de_pago:
+                    plan_texto += "{:<10} {:<15,.2f} {:<15,.2f} {:<15,.2f} {:<15,.2f}\n".format(
+                        cuota.get("numeroCuota", 0),
+                        cuota.get("capital", 0),
+                        cuota.get("interes", 0),
+                        cuota.get("cuota", 0),
+                        cuota.get("saldoRestante", 0)
+                    )
+            else:
+                plan_texto = "\n\nNo se encontró información del plan de pago."
 
             if correo:
                 asunto = 'Resultado de solicitud de crédito'
-                mensaje = f"Hola señor(a) {nombres} {apellidos}, su solicitud de prestamo (#{idSolicitud}) por un monto de {monto} y con un plazo de {plazo} meses, ha sido '{estado}'."
+                if estado == "APROBADO":
+                    mensaje = (
+                        f"Hola señor(a) {nombres} {apellidos},\n\n"
+                        f"Su solicitud de préstamo (#{idSolicitud}) por un monto de {monto} y con un plazo de {plazo} meses ha sido '{estado}'."
+                        f"{plan_texto}\n\nGracias por usar nuestro servicio."
+                    )
+                else:
+                     mensaje = (
+                        f"Hola señor(a) {nombres} {apellidos},\n\n"
+                        f"Su solicitud de préstamo (#{idSolicitud}) por un monto de {monto} y con un plazo de {plazo} meses ha sido '{estado}'."
+                    )
 
                 # Crear el mensaje MIME
                 msg = MIMEText(mensaje)
