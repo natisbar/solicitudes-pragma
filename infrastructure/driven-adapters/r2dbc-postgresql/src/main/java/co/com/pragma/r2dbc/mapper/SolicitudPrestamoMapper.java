@@ -22,6 +22,7 @@ public class SolicitudPrestamoMapper {
                         .id(dto.getIdtipoprestamo())
                         .nombre(dto.getTipoprestamo())
                         .tasaInteres(dto.getTasainteres())
+                        .validacionAutomatica(dto.getValidacionautomatica())
                         .build())
                 .estadoId(dto.getIdestado())
                 .estado(obtenerPorDescripcion(dto.getEstado()))

@@ -27,36 +27,45 @@ public class GenerarSolicitudUseCase {
 
     public Mono<SolicitudPrestamo> ejecutar(SolicitudPrestamo solicitudPrestamo) {
         return validarExistenciaSolicitud(solicitudPrestamo)
-                .flatMap(existeSolicitud -> {
-                    if (Boolean.TRUE.equals(existeSolicitud)) return Mono.error(new ConflictoException(EXISTE_SOLICITUD_ACTIVA));
-                    return solicitudPrestamoGateway.guardar(solicitudPrestamo)
-                            .flatMap(solicitudGuardada -> solicitudPrestamoGateway
-                                    .obtenerDeudaTotalMensualSolicitudesAprobadas(solicitudGuardada.getCorreo())
-                                    .map(deudaTotalMensual -> solicitudPrestamo.toBuilder()
-                                            .id(solicitudGuardada.getId())
-                                            .deudaTotalMensualSolicitudesAprobadas(deudaTotalMensual)
-                                            .build()));
-                })
-                .doOnSuccess(solicitud -> notificacionGateway.iniciarValidacion(solicitud)
-                        .subscribeOn(Schedulers.boundedElastic())
-                        .subscribe(
-                                messageId -> logger.info("Mensaje enviado correctamente. ID: " + messageId),
-                                error -> logger.log(Level.SEVERE, "Error enviando notificación", error)
-                        )
+                .flatMap(solicitudAjustada -> solicitudPrestamoGateway.guardar(solicitudAjustada)
+                        .flatMap(solicitudGuardada -> solicitudPrestamoGateway
+                                .obtenerDeudaTotalMensualSolicitudesAprobadas(solicitudGuardada.getCorreo())
+                                .map(deudaTotalMensual -> solicitudAjustada.toBuilder()
+                                        .id(solicitudGuardada.getId())
+                                        .deudaTotalMensualSolicitudesAprobadas(deudaTotalMensual)
+                                        .build())))
+                .doOnSuccess(solicitud -> {
+                            if (Boolean.TRUE.equals(solicitud.getTipoPrestamo().getValidacionAutomatica())){
+                                notificacionGateway.iniciarValidacion(solicitud)
+                                        .subscribeOn(Schedulers.boundedElastic())
+                                        .subscribe(
+                                                messageId -> logger.info("Mensaje enviado correctamente. ID: " + messageId),
+                                                error -> logger.log(Level.SEVERE, "Error enviando notificación", error)
+                                        );
+                            }
+                        }
                 );
     }
 
-    private Mono<Boolean> validarExistenciaSolicitud(SolicitudPrestamo solicitudPrestamo){
-        return tipoPrestamoGateway.existePorId(solicitudPrestamo.getTipoPrestamoId())
-                .flatMap(existe -> {
-                    if (Boolean.TRUE.equals(existe)) return solicitudPrestamoGateway.existePorEmailYTipoPrestamoIdSinFinalizar(
-                            solicitudPrestamo.getCorreo(),
-                            solicitudPrestamo.getTipoPrestamoId(),
-                            obtenerEstadosFinalizados().stream()
-                                    .map(Estado::getId)
-                                    .toList());
-                    return Mono.error(new NegocioException(
-                            NO_EXISTE_TIPO_PRESTAMO.formatted(solicitudPrestamo.getTipoPrestamoId())));
-                });
+    private Mono<SolicitudPrestamo> validarExistenciaSolicitud(SolicitudPrestamo solicitudPrestamo){
+        return tipoPrestamoGateway.encontrarPorId(solicitudPrestamo.getTipoPrestamoId())
+                .flatMap(tipoPrestamo -> solicitudPrestamoGateway
+                        .existePorEmailYTipoPrestamoIdSinFinalizar(
+                                solicitudPrestamo.getCorreo(),
+                                solicitudPrestamo.getTipoPrestamoId(),
+                                obtenerEstadosFinalizados().stream().map(Estado::getId).toList())
+                        .flatMap(existe -> {
+                            SolicitudPrestamo solicitudAjustada = solicitudPrestamo.toBuilder().tipoPrestamo(tipoPrestamo).build();
+                            if (Boolean.FALSE.equals(tipoPrestamo.getValidacionAutomatica())){
+                                solicitudAjustada = solicitudAjustada.toBuilder()
+                                        .estadoId(Estado.REVISION.getId())
+                                        .estado(Estado.REVISION)
+                                        .build();
+                            }
+                            return Mono.just(solicitudAjustada);
+                        })
+                        .switchIfEmpty(Mono.error(new ConflictoException(EXISTE_SOLICITUD_ACTIVA))))
+                .switchIfEmpty(Mono.error(new NegocioException(
+                        NO_EXISTE_TIPO_PRESTAMO.formatted(solicitudPrestamo.getTipoPrestamoId()))));
     }
 }

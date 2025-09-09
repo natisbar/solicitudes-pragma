@@ -33,6 +33,7 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
                 e.nombre as estado,
                 s.id_tipo_prestamo as idtipoprestamo,
                 tp.nombre as tipoprestamo,
+                tp.validacion_automatica as validacionautomatica,
                 tp.tasa_interes as tasainteres
             FROM solicitudes.solicitud AS s
             INNER JOIN solicitudes.estado as e ON e.id_estado = s.id_estado
@@ -50,10 +51,20 @@ public interface SolicitudPrestamoRepository extends ReactiveCrudRepository<Soli
 
     @Query("""
             SELECT
-                COALESCE(SUM(monto / plazo), 0) AS deuda_total_mensual_solicitudes_aprobadas
-            FROM solicitudes.solicitud
-            WHERE id_estado = 4
-                AND email = :correo
+                COALESCE(
+                    ROUND(
+                        SUM(
+                            s.monto * (
+                                ((tp.tasa_interes/100/12) * POWER(1 + (tp.tasa_interes/100/12), s.plazo)) /
+                                (POWER(1 + (tp.tasa_interes/100/12), s.plazo) - 1)
+                            )
+                        ),2
+                    ), 0
+                ) AS deuda_total_mensual_solicitudes_aprobadas
+            FROM solicitudes.solicitud AS s
+            INNER JOIN solicitudes.tipo_prestamo AS tp ON tp.id_tipo_prestamo = s.id_tipo_prestamo
+            WHERE s.id_estado = 4
+              AND s.email = :correo
             """)
     Mono<BigDecimal> obtenerDeudaTotalMensualSolicitudesAprobadas(@Param("correo") String correo);
 

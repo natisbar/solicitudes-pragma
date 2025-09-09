@@ -18,5 +18,6 @@ public class SolicitudPrestamoDto {
     private String estado;
     private Long idtipoprestamo;
     private String tipoprestamo;
+    private Boolean validacionautomatica;
     private BigDecimal tasainteres;
 }
