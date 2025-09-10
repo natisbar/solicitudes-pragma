@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -37,8 +38,8 @@ public class SolicitudHandler {
                 .map(SecurityContext::getAuthentication)
                 .flatMap(auth -> {
                     String correo = (String) auth.getPrincipal();
-                    Claims claims = (Claims) auth.getDetails();
-                    Double salario = claims.get("salarioBase", Double.class);
+                    Map<String, Object> claims = (Map<String, Object>) auth.getDetails();
+                    Double salario = (Double) claims.get("salarioBase");
                     return serverRequest.bodyToMono(PrestamoSolicitudDto.class)
                             .flatMap(validacionManejador::validar)
                             .map(dto -> solicitudMapper.convertirDesde(dto, correo, salario))
@@ -54,7 +55,7 @@ public class SolicitudHandler {
                 .flatMap(validacionManejador::validar)
                 .map(prestamoSolicitudActualizarDto -> solicitudMapper.convertirDesde(prestamoSolicitudActualizarDto, token))
                 .flatMap(actualizarEstadoSolicitudUseCase::ejecutar)
-                .flatMap(respuesta -> ServerResponse.status(HttpStatus.CREATED).bodyValue(respuesta));
+                .flatMap(respuesta -> ServerResponse.status(HttpStatus.OK).bodyValue(respuesta));
     }
 
     public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {

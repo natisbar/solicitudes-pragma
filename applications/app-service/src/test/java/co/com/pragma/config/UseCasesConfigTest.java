@@ -1,5 +1,6 @@
 package co.com.pragma.config;
 
+import co.com.pragma.model.solicitud.gateways.NotificacionGateway;
 import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
 import co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway;
 import co.com.pragma.model.solicitud.gateways.UsuarioGateway;
@@ -34,7 +35,7 @@ class UseCasesConfigTest {
 
     @Configuration
     @Import(UseCasesConfig.class)
-    static class TestConfig {
+    static class TestConfig<T> {
 
         @Bean
         public TipoPrestamoGateway tipoPrestamoGateway() {
@@ -49,6 +50,11 @@ class UseCasesConfigTest {
         @Bean
         public UsuarioGateway usuarioGateway() {
             return mock(UsuarioGateway.class);
+        }
+
+        @Bean
+        public NotificacionGateway<T> notificacionGateway() {
+            return mock(NotificacionGateway.class);
         }
     }
 }

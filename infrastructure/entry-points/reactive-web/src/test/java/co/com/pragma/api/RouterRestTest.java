@@ -1,5 +1,6 @@
 package co.com.pragma.api;
 
+import co.com.pragma.api.dto.PrestamoSolicitudActualizarDto;
 import co.com.pragma.api.dto.PrestamoSolicitudDto;
 import co.com.pragma.api.exception.ManejadorGlobalErrores;
 import co.com.pragma.api.mapper.FiltroSolicitudMapper;
@@ -10,6 +11,7 @@ import co.com.pragma.api.validador.ValidacionManejador;
 import co.com.pragma.model.solicitud.PaginacionData;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.enums.Estado;
+import co.com.pragma.usecase.generarsolicitud.ActualizarEstadoSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.GenerarSolicitudUseCase;
 import co.com.pragma.usecase.generarsolicitud.ObtenerSolicitudUseCase;
 import jakarta.validation.Validator;
@@ -32,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {RouterRest.class, SolicitudHandler.class, ValidacionManejador.class, Validator.class
         , GenerarSolicitudUseCase.class, SolicitudMapper.class, ManejadorGlobalErrores.class, FiltroSolicitudMapper.class
-        , SecurityHeadersConfig.class})
+        , SecurityHeadersConfig.class, ActualizarEstadoSolicitudUseCase.class})
 @WebFluxTest
 @Import(TestSecurityConfig.class)
 class RouterRestTest {
@@ -42,6 +44,9 @@ class RouterRestTest {
 
     @MockitoBean
     private GenerarSolicitudUseCase generarSolicitudUseCase;
+
+    @MockitoBean
+    private ActualizarEstadoSolicitudUseCase actualizarEstadoSolicitudUseCase;
 
     @MockitoBean
     private ObtenerSolicitudUseCase obtenerSolicitudUseCase;
@@ -106,7 +111,7 @@ class RouterRestTest {
     }
 
     @Test
-    void testListenPOSTUseCase_error200() {
+    void testListenPOSTUseCase_ok200() {
         PrestamoSolicitudDto dto = new PrestamoSolicitudDto(
                 "1000000",
                 "12",
@@ -121,6 +126,7 @@ class RouterRestTest {
                 .build();
 
         when(generarSolicitudUseCase.ejecutar(any(SolicitudPrestamo.class))).thenReturn(Mono.just(solicitudPrestamo));
+        when(generarSolicitudUseCase.ejecutar(any(SolicitudPrestamo.class))).thenReturn(Mono.just(solicitudPrestamo));
 
         webTestClient.post()
                 .uri("/v1/solicitudes")
@@ -129,6 +135,25 @@ class RouterRestTest {
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isCreated()
+                .expectBody();
+    }
+
+    @Test
+    void testListenPUTUseCase_ok200() {
+        PrestamoSolicitudActualizarDto dto = new PrestamoSolicitudActualizarDto(
+                "1",
+                "APROBADO"
+        );
+
+        when(actualizarEstadoSolicitudUseCase.ejecutar(any(SolicitudPrestamo.class))).thenReturn(Mono.just("Actualizado correctamente"));
+
+        webTestClient.put()
+                .uri("/v1/solicitudes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
                 .expectBody();
     }
 

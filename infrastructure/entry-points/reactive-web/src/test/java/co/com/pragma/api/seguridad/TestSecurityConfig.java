@@ -2,6 +2,7 @@ package co.com.pragma.api.seguridad;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -13,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHENTICATION;
 
@@ -30,16 +33,22 @@ public class TestSecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/v1/solicitudes").hasRole("CLIENTE") // respeta tus reglas reales
+                        .pathMatchers(HttpMethod.GET, "/v1/solicitudes").hasRole("ASESOR")
+                        .pathMatchers(HttpMethod.PUT, "/v1/solicitudes").hasRole("ASESOR")
+                        .pathMatchers(HttpMethod.POST, "/v1/solicitudes").hasRole("CLIENTE")
                         .anyExchange().authenticated()
                 )
                 .addFilterAt((exchange, chain) -> {
-                    // Simulamos un Authentication válido
-                    Authentication auth = new UsernamePasswordAuthenticationToken(
+
+                    Map<String, Object> detalles = new HashMap<>();
+                    detalles.put("salarioBase", 123.6);
+
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             "correo@corre.com", // 👉 simula el "sub" del JWT
                             null,
-                            List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"), new SimpleGrantedAuthority("ROLE_ASESOR")) // 👉 rol que necesites
+                            List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"), new SimpleGrantedAuthority("ROLE_ASESOR"))
                     );
+                    auth.setDetails(detalles);
                     SecurityContext context = new SecurityContextImpl(auth);
 
                     return chain.filter(exchange)

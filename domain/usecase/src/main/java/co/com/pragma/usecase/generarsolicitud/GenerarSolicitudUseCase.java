@@ -55,16 +55,18 @@ public class GenerarSolicitudUseCase {
                                 solicitudPrestamo.getTipoPrestamoId(),
                                 obtenerEstadosFinalizados().stream().map(Estado::getId).toList())
                         .flatMap(existe -> {
-                            SolicitudPrestamo solicitudAjustada = solicitudPrestamo.toBuilder().tipoPrestamo(tipoPrestamo).build();
-                            if (Boolean.FALSE.equals(tipoPrestamo.getValidacionAutomatica())){
-                                solicitudAjustada = solicitudAjustada.toBuilder()
-                                        .estadoId(Estado.REVISION.getId())
-                                        .estado(Estado.REVISION)
-                                        .build();
+                            if (Boolean.FALSE.equals(existe)){
+                                SolicitudPrestamo solicitudAjustada = solicitudPrestamo.toBuilder().tipoPrestamo(tipoPrestamo).build();
+                                if (Boolean.FALSE.equals(tipoPrestamo.getValidacionAutomatica())){
+                                    solicitudAjustada = solicitudAjustada.toBuilder()
+                                            .estadoId(Estado.REVISION.getId())
+                                            .estado(Estado.REVISION)
+                                            .build();
+                                }
+                                return Mono.just(solicitudAjustada);
                             }
-                            return Mono.just(solicitudAjustada);
-                        })
-                        .switchIfEmpty(Mono.error(new ConflictoException(EXISTE_SOLICITUD_ACTIVA))))
+                            return Mono.error(new ConflictoException(EXISTE_SOLICITUD_ACTIVA));
+                        }))
                 .switchIfEmpty(Mono.error(new NegocioException(
                         NO_EXISTE_TIPO_PRESTAMO.formatted(solicitudPrestamo.getTipoPrestamoId()))));
     }

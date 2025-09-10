@@ -1,5 +1,6 @@
 package co.com.pragma.model.solicitud.enums;
 
+import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -7,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +29,17 @@ class EstadoTest {
         assertEquals(Estado.RECHAZADA, Estado.obtenerPorDescripcion("RECHAZADA"));
         assertEquals(Estado.REVISION, Estado.obtenerPorDescripcion("REVISION MANUAL"));
         assertEquals(Estado.APROBADO, Estado.obtenerPorDescripcion("APROBADO"));
-        assertNull(Estado.obtenerPorDescripcion("DESCONOCIDO")); // no existe
+    }
+
+    @Test
+    void debeLanzarExcepcionCuandoDescripcionNoExiste() {
+        // Arrange
+        String descripcionInvalida = "INEXISTENTE";
+
+        // Assert
+        assertThatThrownBy(() -> Estado.obtenerPorDescripcion(descripcionInvalida))
+                .isInstanceOf(NegocioException.class)
+                .hasMessageContaining("El estado recibido no existe");
     }
 
     @Test
