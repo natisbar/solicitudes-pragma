@@ -87,6 +87,32 @@ class SolicitudPrestamoRepositoryAdapterTest {
     }
 
     @Test
+    void debeActualizarEstado() {
+        SolicitudPrestamo model = SolicitudPrestamo.builder().id(1L).estadoId(4L).build();
+        when(repository.actualizarEstado(anyLong(), anyLong())).thenReturn(Mono.empty());
+
+        Mono<Void> result = repositoryAdapter.actualizarEstado(model);
+
+        StepVerifier.create(result)
+                .verifyComplete();
+    }
+
+    @Test
+    void obtenerPorId() {
+        SolicitudPrestamoDto dto = SolicitudPrestamoDto.builder().idsolicitud(1L).build();
+        SolicitudPrestamo model = SolicitudPrestamo.builder().id(1L).build();
+
+        when(repository.findByIdWithJoin(1L)).thenReturn(Mono.just(dto));
+        when(solicitudPrestamoMapper.convertirDesde(any(SolicitudPrestamoDto.class))).thenReturn(model);
+
+        Mono<SolicitudPrestamo> result = repositoryAdapter.obtenerPorId(1L);
+
+        StepVerifier.create(result)
+                .expectNextMatches(value -> value.getId().equals(dto.getIdsolicitud()))
+                .verifyComplete();
+    }
+
+    @Test
     void mustFindValueById() {
         SolicitudPrestamoData entity = SolicitudPrestamoData.builder().id(1L).build();
         SolicitudPrestamo model = SolicitudPrestamo.builder().id(1L).build();

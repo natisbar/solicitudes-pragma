@@ -24,10 +24,10 @@ public class ActualizarEstadoSolicitudUseCase {
     private final UsuarioGateway usuarioGateway;
     private final NotificacionGateway<SolicitudPrestamo> notificacionGateway;
     private static final Logger logger = Logger.getLogger(ActualizarEstadoSolicitudUseCase.class.getName());
-    private static final String ESTADO_NO_ES_PARA_FINALIZAR = "El estado no es válido, debe ser RECHAZADO o APROBADO";
-    private static final String SOLICITUD_FINALIZADA = "La solicitud ya fue finalizada.";
-    private static final String SOLICITUD_NO_EXISTE = "La solicitud a actualizar no existe";
-    private static final String SOLICITUD_ACTUALIZADA = "Solicitud actualizada correctamente";
+    public static final String ESTADO_NO_ES_PARA_FINALIZAR = "El estado no es válido, debe ser RECHAZADO o APROBADO";
+    public static final String SOLICITUD_FINALIZADA = "La solicitud ya fue finalizada.";
+    public static final String SOLICITUD_NO_EXISTE = "La solicitud a actualizar no existe";
+    public static final String SOLICITUD_ACTUALIZADA = "Solicitud actualizada correctamente";
     private static final BigDecimal CANTIDAD_SALARIOS_MAXIMOS = new BigDecimal(5);
 
     public Mono<String> ejecutar(SolicitudPrestamo solicitudPrestamo) {
