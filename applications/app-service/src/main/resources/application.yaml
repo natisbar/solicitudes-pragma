@@ -15,17 +15,17 @@ spring:
     include: null
 adapters:
   r2dbc:
-    host: "localhost"
-    port: 5432
-    database: "pragma"
-    schema: "solicitudes"
-    username: "postgres"
-    password: 1234
+    host: ${R2DBC_HOST_REQ:localhost}
+    port: ${R2DBC_PORT_REQ:5432}
+    database: ${R2DBC_DATABASE_REQ:pragma}
+    schema: ${R2DBC_SCHEMA_REQ:solicitudes}
+    username: ${R2DBC_USERNAME_REQ:postgres}
+    password: ${R2DBC_PASSWORD_REQ:1234}
 security:
   jwt:
-    secretkey: "Bardelhaus1234567890Bardelhaus1234567890$"
+    secretkey: ${JWT_SECRET_KEY:Bardelhaus1234567890Bardelhaus1234567890$}
   user:
-    admin: "jandreaj100@gmail.com"
+    admin: ${USER_ADMIN:jandreaj100@gmail.com}
 management:
   endpoints:
     web:
@@ -43,20 +43,17 @@ cors:
 adapter:
   restconsumer:
     timeout: 5000
-    url: "http://localhost:8080/api"
-    path: "v1/usuarios/por-correos"
-    path-login: "v1/login"
-    username: "jandreaj100@gmail.com"
-    password: "Bardelhaus1$"
+    url: ${REST_URL:http://localhost:8080/api}
+    path: ${REST_PATH:v1/usuarios/por-correos}
   sqs:
     validacion:
-      region: "us-east-2"
-      queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/Solicitudes.fifo"
-      endpoint: "https://sqs.us-east-2.amazonaws.com"
+      region: ${SQS_REGION:us-east-2}
+      queueUrl: ${SQS_SEND_VALIDACION_QUEUE:https://sqs.us-east-2.amazonaws.com/096212910572/Solicitudes.fifo}
+      endpoint: ${SQS_ENDPOINT:https://sqs.us-east-2.amazonaws.com}
     respuesta:
-      region: "us-east-2"
-      queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/Respuesta.fifo"
-      endpoint: "https://sqs.us-east-2.amazonaws.com"
+      region: ${SQS_REGION:us-east-2}
+      queueUrl: ${SQS_SEND_RESPUESTA_QUEUE:https://sqs.us-east-2.amazonaws.com/096212910572/Respuesta.fifo}
+      endpoint: ${SQS_ENDPOINT:https://sqs.us-east-2.amazonaws.com}
 resilience4j:
   circuitbreaker:
     instances:
@@ -80,9 +77,9 @@ resilience4j:
         waitDurationInOpenState: "10s"
 entrypoint:
   sqs:
-    region: "us-east-2"
-    endpoint: "https://sqs.us-east-2.amazonaws.com"
-    queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/RespuestaEstado.fifo"
+    region: ${SQS_REGION:us-east-2}
+    endpoint: ${SQS_LISTENER_QUEUE:https://sqs.us-east-2.amazonaws.com}
+    queueUrl: ${SQS_LISTENER_ENDPOINT:https://sqs.us-east-2.amazonaws.com/096212910572/RespuestaEstado.fifo}
     waitTimeSeconds: 20
     maxNumberOfMessages: 10
     visibilityTimeoutSeconds: 10
