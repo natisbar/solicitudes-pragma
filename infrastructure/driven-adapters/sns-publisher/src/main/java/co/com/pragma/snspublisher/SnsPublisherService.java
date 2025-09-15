@@ -1,5 +1,6 @@
 package co.com.pragma.snspublisher;
 
+import co.com.pragma.model.solicitud.common.ex.TechnicalException;
 import co.com.pragma.model.solicitud.gateways.PublicacionGateway;
 import co.com.pragma.snspublisher.config.SnsPublisherProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.sns.SnsAsyncClient;
 import software.amazon.awssdk.services.sns.model.PublishRequest;
+import software.amazon.awssdk.services.sns.model.PublishResponse;
 
 @Service
 public class SnsPublisherService<T>  implements PublicacionGateway<T> {
@@ -23,23 +25,21 @@ public class SnsPublisherService<T>  implements PublicacionGateway<T> {
     }
 
     @Override
-    public Mono<Void> publicar(T mensaje) {
-        PublishRequest request = PublishRequest.builder()
-                .topicArn(snsPublisherProperties.getTopicArn())
-                .message(convertirAString(mensaje))
-                .build();
-
-        return Mono.fromFuture(() -> snsAsyncClient.publish(request))
-                .doOnSuccess(response -> {
-                    System.out.println("Message published with ID: " + response.messageId());
-                }).then();
+    public Mono<String> publicar(T mensaje) {
+        return Mono.fromCallable(() -> convertirAString(mensaje))
+                .map(json -> PublishRequest.builder()
+                        .topicArn(snsPublisherProperties.getTopicArn())
+                        .message(json)
+                        .build())
+                .flatMap(request -> Mono.fromFuture(() -> snsAsyncClient.publish(request)))
+                .map(PublishResponse::messageId);
     }
 
     private String convertirAString(T objetoMensaje){
         try {
             return objectMapper.writeValueAsString(objetoMensaje);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e.getMessage());
         }
     }
 }

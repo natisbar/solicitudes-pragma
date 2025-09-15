@@ -5,7 +5,7 @@ import co.com.pragma.model.solicitud.TipoPrestamo;
 import co.com.pragma.model.solicitud.Usuario;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import co.com.pragma.model.solicitud.enums.Estado;
-import co.com.pragma.model.solicitud.gateways.NotificacionGateway;
+import co.com.pragma.model.solicitud.gateways.PublicacionGateway;
 import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
 import co.com.pragma.model.solicitud.gateways.UsuarioGateway;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class ActualizarEstadoSolicitudUseCaseTest {
     @Mock
     private UsuarioGateway usuarioGateway;
     @Mock
-    private NotificacionGateway<SolicitudPrestamo> notificacionGateway;
+    private PublicacionGateway<SolicitudPrestamo> publicacionGateway;
     @InjectMocks
     private ActualizarEstadoSolicitudUseCase useCase;
 
@@ -118,7 +118,7 @@ class ActualizarEstadoSolicitudUseCaseTest {
         when(solicitudGateway.obtenerPorId(1L)).thenReturn(Mono.just(encontrada));
         when(usuarioGateway.obtenerPorListaCorreos(any(), any())).thenReturn(Flux.just(usuario));
         when(solicitudGateway.actualizarEstado(any())).thenReturn(Mono.empty());
-        when(notificacionGateway.responder(any())).thenReturn(Mono.just("msg-123"));
+        when(publicacionGateway.publicar(any())).thenReturn(Mono.just("msg-123"));
 
         StepVerifier.create(useCase.ejecutar(solicitud))
                 .expectNext("Solicitud actualizada correctamente")
@@ -149,7 +149,7 @@ class ActualizarEstadoSolicitudUseCaseTest {
         when(solicitudGateway.obtenerPorId(1L)).thenReturn(Mono.just(encontrada));
         when(usuarioGateway.obtenerPorListaCorreos(any(), any())).thenReturn(Flux.just(usuario));
         when(solicitudGateway.actualizarEstado(any())).thenReturn(Mono.empty());
-        when(notificacionGateway.responder(any())).thenReturn(Mono.error(new RuntimeException("erros")));
+        when(publicacionGateway.publicar(any())).thenReturn(Mono.error(new RuntimeException("erros")));
 
         StepVerifier.create(useCase.ejecutar(solicitud))
                 .expectNext("Solicitud actualizada correctamente")
@@ -210,7 +210,7 @@ class ActualizarEstadoSolicitudUseCaseTest {
         when(solicitudGateway.obtenerPorId(3L)).thenReturn(Mono.just(encontrada));
         when(usuarioGateway.obtenerPorListaCorreos(any(), any())).thenReturn(Flux.just(usuario));
         when(solicitudGateway.actualizarEstado(any())).thenReturn(Mono.empty());
-        when(notificacionGateway.responder(any())).thenReturn(Mono.just("msg-789"));
+        when(publicacionGateway.publicar(any())).thenReturn(Mono.just("msg-789"));
 
         StepVerifier.create(useCase.ejecutar(solicitud))
                 .expectNext("Solicitud actualizada correctamente")

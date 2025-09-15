@@ -1,9 +1,6 @@
 package co.com.pragma.config;
 
-import co.com.pragma.model.solicitud.gateways.NotificacionGateway;
-import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
-import co.com.pragma.model.solicitud.gateways.TipoPrestamoGateway;
-import co.com.pragma.model.solicitud.gateways.UsuarioGateway;
+import co.com.pragma.model.solicitud.gateways.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +52,11 @@ class UseCasesConfigTest {
         @Bean
         public NotificacionGateway<T> notificacionGateway() {
             return mock(NotificacionGateway.class);
+        }
+
+        @Bean
+        public PublicacionGateway<T> publicacionGateway() {
+            return mock(PublicacionGateway.class);
         }
     }
 }
