@@ -81,8 +81,8 @@ resilience4j:
 entrypoint:
   sqs:
     region: "${SQS_REGION:us-east-2}"
-    endpoint: "${SQS_LISTENER_QUEUE:https://sqs.us-east-2.amazonaws.com}"
-    queueUrl: "${SQS_LISTENER_ENDPOINT:https://sqs.us-east-2.amazonaws.com/096212910572/RespuestaEstado.fifo}"
+    endpoint: "${SQS_ENDPOINT:https://sqs.us-east-2.amazonaws.com}"
+    queueUrl: "${SQS_LISTENER_ESTADO_ENDPOINT:https://sqs.us-east-2.amazonaws.com/096212910572/RespuestaEstado.fifo}"
     waitTimeSeconds: 20
     maxNumberOfMessages: 10
     visibilityTimeoutSeconds: 10

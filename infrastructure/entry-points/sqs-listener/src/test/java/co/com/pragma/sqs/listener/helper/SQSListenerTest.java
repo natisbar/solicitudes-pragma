@@ -43,16 +43,6 @@ class SQSListenerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        var sqsProperties = new SQSProperties(
-                "us-east-1",
-                "http://localhost:4566",
-                "http://localhost:4566/00000000000/queueName",
-                20,
-                30,
-                10,
-                1
-        );
-
         var message = Message.builder().body("message").build();
         var deleteMessageResponse = DeleteMessageResponse.builder().build();
         var messageResponse = ReceiveMessageResponse.builder().messages(message).build();
