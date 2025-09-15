@@ -1,6 +1,7 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+	implementation project(':sns-publisher')
 	implementation project(':sqs-listener')
 	implementation project(':sqs-sender')
 	implementation project(':metrics')

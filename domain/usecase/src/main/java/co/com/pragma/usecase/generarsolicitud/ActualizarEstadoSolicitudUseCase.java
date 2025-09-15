@@ -4,7 +4,7 @@ import co.com.pragma.model.solicitud.CuotaPago;
 import co.com.pragma.model.solicitud.SolicitudPrestamo;
 import co.com.pragma.model.solicitud.common.ex.NegocioException;
 import co.com.pragma.model.solicitud.enums.Estado;
-import co.com.pragma.model.solicitud.gateways.NotificacionGateway;
+import co.com.pragma.model.solicitud.gateways.PublicacionGateway;
 import co.com.pragma.model.solicitud.gateways.SolicitudPrestamoGateway;
 import co.com.pragma.model.solicitud.gateways.UsuarioGateway;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class ActualizarEstadoSolicitudUseCase {
     private final SolicitudPrestamoGateway solicitudPrestamoGateway;
     private final UsuarioGateway usuarioGateway;
-    private final NotificacionGateway<SolicitudPrestamo> notificacionGateway;
+    private final PublicacionGateway<SolicitudPrestamo> publicacionGateway;
     private static final Logger logger = Logger.getLogger(ActualizarEstadoSolicitudUseCase.class.getName());
     public static final String ESTADO_NO_ES_PARA_FINALIZAR = "El estado no es válido, debe ser RECHAZADO o APROBADO";
     public static final String SOLICITUD_FINALIZADA = "La solicitud ya fue finalizada.";
@@ -51,7 +51,7 @@ public class ActualizarEstadoSolicitudUseCase {
                                                                 solicitudFinal.setPlanDePago(generarPlanDePago(solicitudFinal));
                                                             }
                                                             if (Estado.obtenerEstadosFinalizados().contains(solicitudFinal.getEstado())){
-                                                                notificacionGateway.responder(solicitudFinal)
+                                                                publicacionGateway.publicar(solicitudFinal)
                                                                         .subscribeOn(Schedulers.boundedElastic())
                                                                         .subscribe(
                                                                                 messageId -> logger.info("Mensaje enviado correctamente. ID: " + messageId),
